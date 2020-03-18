@@ -2,8 +2,8 @@
   "name": "@flyover/box2d",
   "version": "1.0.1",
   "description": "A TypeScript port of Box2D",
-  "main": "./Build/Box2D/box2d.umd.js",
-  "types": "./Box2D/Box2D.ts",
+  "main": "./lib/Box2D.js",
+  "types": "./lib/Box2D.d.ts",
   "scripts": {
     "build": "npm run build-testbed",
     "build-all": "npm run build-box2d && npm run build-helloworld && npm run build-testbed",
@@ -19,7 +19,8 @@
     "build-testbed": "tsc -p Testbed",
     "watch-testbed": "tsc -p Testbed --watch",
     "dist-testbed": "(cd Testbed && rollup -c)",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:lib": "tsc -p tsconfig.json"
   },
   "repository": {
     "type": "git",
@@ -35,11 +36,6 @@
     "@types/systemjs": "^0.20.6"
   },
   "devDependencies": {
-    "http-server": "^0.11.1",
-    "plugin-typescript": "^8.0.0",
-    "rollup": "^1.21.2",
-    "rollup-plugin-typescript2": "^0.25.2",
-    "systemjs": "^0.21.6",
     "tslint": "^5.20.0",
     "typescript": "^3.6.3"
   }

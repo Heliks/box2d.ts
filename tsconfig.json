@@ -1,15 +1,21 @@
 {
   "compilerOptions": {
     "target": "ES2016",
-    "module": "system",
+    "module": "commonjs",
     "strict": true,
+    "declaration": true,
+    "sourceMap": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noUnusedLocals": true,
-    "inlineSourceMap": true
+    "outDir": "./lib",
+    "baseUrl": "./Box2D"
   },
+  "exclude": [
+    "node_modules"
+  ],
   "include": [
-    "**/*.ts"
+    "./Box2D/**/*.ts"
   ]
 }
