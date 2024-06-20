@@ -1,14 +1,16 @@
 {
-  "name": "@flyover/box2d",
+  "name": "@heliks/box2d",
   "version": "1.0.1",
   "description": "A TypeScript port of Box2D",
-  "main": "./dist/box2d.umd.js",
-  "type": "module",
-  "types": "./build/index.d.ts",
+  "main": "./lib/box2d.js",
+  "types": "./lib/box2d.d.ts",
+  "files": [
+    "lib/*"
+  ],
   "scripts": {
     "clean": "npm run clean-box2d",
-    "build": "npm run build-box2d",
-    "watch": "npm run watch-box2d",
+    "build": "tsc",
+    "watch": "tsc -w",
     "start": "npm run start-testbed",
     "dist": "npm run dist-all",
     "clean-all": "npm run clean-box2d && npm run clean-unit-test && npm run clean-testbed",
@@ -38,9 +40,6 @@
   },
   "author": "Isaac Burns <isaacburns@gmail.com>",
   "license": "Zlib",
-  "bugs": {
-    "url": "https://github.com/flyover/box2d.ts/issues"
-  },
   "homepage": "https://github.com/flyover/box2d.ts#readme",
   "dependencies": {
     "@types/systemjs": "^6.1.0"
