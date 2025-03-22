@@ -16,26 +16,26 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-import { b2Transform } from "../common/b2_math.js";
-import { b2CollideEdgeAndPolygon } from "../collision/b2_collide_edge.js";
-import { b2Manifold } from "../collision/b2_collision.js";
-import { b2ChainShape } from "../collision/b2_chain_shape.js";
-import { b2EdgeShape } from "../collision/b2_edge_shape.js";
-import { b2PolygonShape } from "../collision/b2_polygon_shape.js";
-import { b2Contact } from "./b2_contact.js";
+import { B2Transform } from "../common/b2_math.js";
+import { B2CollideEdgeAndPolygon } from "../collision/b2_collide_edge.js";
+import { B2Manifold } from "../collision/b2_collision.js";
+import { B2ChainShape } from "../collision/b2_chain_shape.js";
+import { B2EdgeShape } from "../collision/b2_edge_shape.js";
+import { B2PolygonShape } from "../collision/b2_polygon_shape.js";
+import { B2Contact } from "./b2_contact.js";
 
-export class b2ChainAndPolygonContact extends b2Contact<b2ChainShape, b2PolygonShape> {
-  public static Create(): b2Contact {
-    return new b2ChainAndPolygonContact();
+export class B2ChainAndPolygonContact extends B2Contact<B2ChainShape, B2PolygonShape> {
+  public static Create(): B2Contact {
+    return new B2ChainAndPolygonContact();
   }
 
-  public static Destroy(contact: b2Contact): void {
+  public static Destroy(contact: B2Contact): void {
   }
 
-  private static Evaluate_s_edge = new b2EdgeShape();
-  public Evaluate(manifold: b2Manifold, xfA: b2Transform, xfB: b2Transform): void {
-    const edge: b2EdgeShape = b2ChainAndPolygonContact.Evaluate_s_edge;
+  private static Evaluate_s_edge = new B2EdgeShape();
+  public Evaluate(manifold: B2Manifold, xfA: B2Transform, xfB: B2Transform): void {
+    const edge: B2EdgeShape = B2ChainAndPolygonContact.Evaluate_s_edge;
     this.GetShapeA().GetChildEdge(edge, this.m_indexA);
-    b2CollideEdgeAndPolygon(manifold, edge, xfA, this.GetShapeB(), xfB);
+    B2CollideEdgeAndPolygon(manifold, edge, xfA, this.GetShapeB(), xfB);
   }
 }

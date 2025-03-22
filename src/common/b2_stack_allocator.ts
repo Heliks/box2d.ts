@@ -16,4 +16,4 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-export class b2StackAllocator {}
+export class B2StackAllocator {}

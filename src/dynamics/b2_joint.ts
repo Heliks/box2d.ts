@@ -16,15 +16,15 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings.js";
-import { b2Maybe, b2_pi } from "../common/b2_settings.js";
-import { b2Vec2, XY, b2Transform } from "../common/b2_math.js";
-import { b2Body } from "./b2_body.js";
-import { b2SolverData } from "./b2_time_step.js";
-import { b2Draw, b2Color } from "../common/b2_draw.js";
-import { b2PulleyJoint } from "./b2_pulley_joint.js";
+// DEBUG: import { B2Assert } from "../common/b2_settings.js";
+import { B2Maybe, B2_pi } from "../common/b2_settings.js";
+import { B2Vec2, XY, B2Transform } from "../common/b2_math.js";
+import { B2Body } from "./b2_body.js";
+import { B2SolverData } from "./b2_time_step.js";
+import { B2Draw, B2Color } from "../common/b2_draw.js";
+import { B2PulleyJoint } from "./b2_pulley_joint.js";
 
-export enum b2JointType {
+export enum B2JointType {
   e_unknownJoint = 0,
   e_revoluteJoint = 1,
   e_prismaticJoint = 2,
@@ -40,19 +40,19 @@ export enum b2JointType {
   e_areaJoint = 12,
 }
 
-export class b2Jacobian {
-  public readonly linear: b2Vec2 = new b2Vec2();
+export class B2Jacobian {
+  public readonly linear: B2Vec2 = new B2Vec2();
   public angularA: number = 0;
   public angularB: number = 0;
 
-  public SetZero(): b2Jacobian {
+  public SetZero(): B2Jacobian {
     this.linear.SetZero();
     this.angularA = 0;
     this.angularB = 0;
     return this;
   }
 
-  public Set(x: XY, a1: number, a2: number): b2Jacobian {
+  public Set(x: XY, a1: number, a2: number): B2Jacobian {
     this.linear.Copy(x);
     this.angularA = a1;
     this.angularB = a2;
@@ -65,20 +65,20 @@ export class b2Jacobian {
 /// is an edge. A joint edge belongs to a doubly linked list
 /// maintained in each attached body. Each joint has two joint
 /// nodes, one for each attached body.
-export class b2JointEdge {
-  private _other: b2Body | null = null; ///< provides quick access to the other body attached.
-  public get other(): b2Body {
+export class B2JointEdge {
+  private _other: B2Body | null = null; ///< provides quick access to the other body attached.
+  public get other(): B2Body {
     if (this._other === null) { throw new Error(); }
     return this._other;
   }
-  public set other(value: b2Body) {
+  public set other(value: B2Body) {
     if (this._other !== null) { throw new Error(); }
     this._other = value;
   }
-  public readonly joint: b2Joint;    ///< the joint
-  public prev: b2JointEdge | null = null;  ///< the previous joint edge in the body's joint list
-  public next: b2JointEdge | null = null;  ///< the next joint edge in the body's joint list
-  constructor(joint: b2Joint) {
+  public readonly joint: B2Joint;    ///< the joint
+  public prev: B2JointEdge | null = null;  ///< the previous joint edge in the body's joint list
+  public next: B2JointEdge | null = null;  ///< the next joint edge in the body's joint list
+  constructor(joint: B2Joint) {
     this.joint = joint;
   }
   public Reset(): void {
@@ -89,50 +89,50 @@ export class b2JointEdge {
 }
 
 /// Joint definitions are used to construct joints.
-export interface b2IJointDef {
+export interface B2IJointDef {
   /// The joint type is set automatically for concrete joint types.
-  type: b2JointType;
+  type: B2JointType;
 
   /// Use this to attach application specific data to your joints.
   userData?: any;
 
   /// The first attached body.
-  bodyA: b2Body;
+  bodyA: B2Body;
 
   /// The second attached body.
-  bodyB: b2Body;
+  bodyB: B2Body;
 
   /// Set this flag to true if the attached bodies should collide.
   collideConnected?: boolean;
 }
 
 /// Joint definitions are used to construct joints.
-export abstract class b2JointDef implements b2IJointDef {
+export abstract class B2JointDef implements B2IJointDef {
   /// The joint type is set automatically for concrete joint types.
-  public readonly type: b2JointType = b2JointType.e_unknownJoint;
+  public readonly type: B2JointType = B2JointType.e_unknownJoint;
 
   /// Use this to attach application specific data to your joints.
   public userData: any = null;
 
   /// The first attached body.
-  public bodyA!: b2Body;
+  public bodyA!: B2Body;
 
   /// The second attached body.
-  public bodyB!: b2Body;
+  public bodyB!: B2Body;
 
   /// Set this flag to true if the attached bodies should collide.
   public collideConnected: boolean = false;
 
-  constructor(type: b2JointType) {
+  constructor(type: B2JointType) {
     this.type = type;
   }
 }
 
 /// Utility to compute linear stiffness values from frequency and damping ratio
-// void b2LinearStiffness(float& stiffness, float& damping,
+// void B2LinearStiffness(float& stiffness, float& damping,
 // 	float frequencyHertz, float dampingRatio,
-// 	const b2Body* bodyA, const b2Body* bodyB);
-export function b2LinearStiffness(def: { stiffness: number, damping: number }, frequencyHertz: number, dampingRatio: number, bodyA: b2Body, bodyB: b2Body): void {
+// 	const B2Body* bodyA, const B2Body* bodyB);
+export function B2LinearStiffness(def: { stiffness: number, damping: number }, frequencyHertz: number, dampingRatio: number, bodyA: B2Body, bodyB: B2Body): void {
   const massA: number = bodyA.GetMass();
   const massB: number = bodyB.GetMass();
   let mass: number;
@@ -144,16 +144,16 @@ export function b2LinearStiffness(def: { stiffness: number, damping: number }, f
     mass = massB;
   }
 
-  const omega: number = 2.0 * b2_pi * frequencyHertz;
+  const omega: number = 2.0 * B2_pi * frequencyHertz;
   def.stiffness = mass * omega * omega;
   def.damping = 2.0 * mass * dampingRatio * omega;
 }
 
 /// Utility to compute rotational stiffness values frequency and damping ratio
-// void b2AngularStiffness(float& stiffness, float& damping,
+// void B2AngularStiffness(float& stiffness, float& damping,
 // 	float frequencyHertz, float dampingRatio,
-// 	const b2Body* bodyA, const b2Body* bodyB);
-export function b2AngularStiffness(def: { stiffness: number, damping: number }, frequencyHertz: number, dampingRatio: number, bodyA: b2Body, bodyB: b2Body): void {
+// 	const B2Body* bodyA, const B2Body* bodyB);
+export function B2AngularStiffness(def: { stiffness: number, damping: number }, frequencyHertz: number, dampingRatio: number, bodyA: B2Body, bodyB: B2Body): void {
   const IA: number = bodyA.GetInertia();
   const IB: number = bodyB.GetInertia();
   let I: number;
@@ -165,21 +165,21 @@ export function b2AngularStiffness(def: { stiffness: number, damping: number }, 
     I = IB;
   }
 
-  const omega: number = 2.0 * b2_pi * frequencyHertz;
+  const omega: number = 2.0 * B2_pi * frequencyHertz;
   def.stiffness = I * omega * omega;
   def.damping = 2.0 * I * dampingRatio * omega;
 }
 
 /// The base joint class. Joints are used to constraint two bodies together in
 /// various fashions. Some joints also feature limits and motors.
-export abstract class b2Joint {
-  public readonly m_type: b2JointType = b2JointType.e_unknownJoint;
-  public m_prev: b2Joint | null = null;
-  public m_next: b2Joint | null = null;
-  public readonly m_edgeA: b2JointEdge = new b2JointEdge(this);
-  public readonly m_edgeB: b2JointEdge = new b2JointEdge(this);
-  public m_bodyA: b2Body;
-  public m_bodyB: b2Body;
+export abstract class B2Joint {
+  public readonly m_type: B2JointType = B2JointType.e_unknownJoint;
+  public m_prev: B2Joint | null = null;
+  public m_next: B2Joint | null = null;
+  public readonly m_edgeA: B2JointEdge = new B2JointEdge(this);
+  public readonly m_edgeB: B2JointEdge = new B2JointEdge(this);
+  public m_bodyA: B2Body;
+  public m_bodyB: B2Body;
 
   public m_index: number = 0;
 
@@ -188,8 +188,8 @@ export abstract class b2Joint {
 
   public m_userData: any = null;
 
-  constructor(def: b2IJointDef) {
-    // DEBUG: b2Assert(def.bodyA !== def.bodyB);
+  constructor(def: B2IJointDef) {
+    // DEBUG: B2Assert(def.bodyA !== def.bodyB);
 
     this.m_type = def.type;
     this.m_edgeA.other = def.bodyB;
@@ -197,23 +197,23 @@ export abstract class b2Joint {
     this.m_bodyA = def.bodyA;
     this.m_bodyB = def.bodyB;
 
-    this.m_collideConnected = b2Maybe(def.collideConnected, false);
+    this.m_collideConnected = B2Maybe(def.collideConnected, false);
 
-    this.m_userData = b2Maybe(def.userData, null);
+    this.m_userData = B2Maybe(def.userData, null);
   }
 
   /// Get the type of the concrete joint.
-  public GetType(): b2JointType {
+  public GetType(): B2JointType {
     return this.m_type;
   }
 
   /// Get the first body attached to this joint.
-  public GetBodyA(): b2Body {
+  public GetBodyA(): B2Body {
     return this.m_bodyA;
   }
 
   /// Get the second body attached to this joint.
-  public GetBodyB(): b2Body {
+  public GetBodyB(): B2Body {
     return this.m_bodyB;
   }
 
@@ -230,7 +230,7 @@ export abstract class b2Joint {
   public abstract GetReactionTorque(inv_dt: number): number;
 
   /// Get the next joint the world joint list.
-  public GetNext(): b2Joint | null {
+  public GetNext(): B2Joint | null {
     return this.m_next;
   }
 
@@ -265,39 +265,39 @@ export abstract class b2Joint {
   public ShiftOrigin(newOrigin: XY): void { }
 
   /// Debug draw this joint
-  private static Draw_s_p1: b2Vec2 = new b2Vec2();
-  private static Draw_s_p2: b2Vec2 = new b2Vec2();
-  private static Draw_s_color: b2Color = new b2Color(0.5, 0.8, 0.8);
-  private static Draw_s_c: b2Color = new b2Color();
-  public Draw(draw: b2Draw): void {
-    const xf1: b2Transform = this.m_bodyA.GetTransform();
-    const xf2: b2Transform = this.m_bodyB.GetTransform();
-    const x1: b2Vec2 = xf1.p;
-    const x2: b2Vec2 = xf2.p;
-    const p1: b2Vec2 = this.GetAnchorA(b2Joint.Draw_s_p1);
-    const p2: b2Vec2 = this.GetAnchorB(b2Joint.Draw_s_p2);
+  private static Draw_s_p1: B2Vec2 = new B2Vec2();
+  private static Draw_s_p2: B2Vec2 = new B2Vec2();
+  private static Draw_s_color: B2Color = new B2Color(0.5, 0.8, 0.8);
+  private static Draw_s_c: B2Color = new B2Color();
+  public Draw(draw: B2Draw): void {
+    const xf1: B2Transform = this.m_bodyA.GetTransform();
+    const xf2: B2Transform = this.m_bodyB.GetTransform();
+    const x1: B2Vec2 = xf1.p;
+    const x2: B2Vec2 = xf2.p;
+    const p1: B2Vec2 = this.GetAnchorA(B2Joint.Draw_s_p1);
+    const p2: B2Vec2 = this.GetAnchorB(B2Joint.Draw_s_p2);
 
-    const color: b2Color = b2Joint.Draw_s_color.SetRGB(0.5, 0.8, 0.8);
+    const color: B2Color = B2Joint.Draw_s_color.SetRGB(0.5, 0.8, 0.8);
 
     switch (this.m_type) {
-      case b2JointType.e_distanceJoint:
+      case B2JointType.e_distanceJoint:
         draw.DrawSegment(p1, p2, color);
         break;
 
-      case b2JointType.e_pulleyJoint:
+      case B2JointType.e_pulleyJoint:
         {
-          const pulley: b2PulleyJoint = this as unknown as b2PulleyJoint;
-          const s1: b2Vec2 = pulley.GetGroundAnchorA();
-          const s2: b2Vec2 = pulley.GetGroundAnchorB();
+          const pulley: B2PulleyJoint = this as unknown as B2PulleyJoint;
+          const s1: B2Vec2 = pulley.GetGroundAnchorA();
+          const s2: B2Vec2 = pulley.GetGroundAnchorB();
           draw.DrawSegment(s1, p1, color);
           draw.DrawSegment(s2, p2, color);
           draw.DrawSegment(s1, s2, color);
         }
         break;
 
-      case b2JointType.e_mouseJoint:
+      case B2JointType.e_mouseJoint:
         {
-          const c = b2Joint.Draw_s_c;
+          const c = B2Joint.Draw_s_c;
           c.Set(0.0, 1.0, 0.0);
           draw.DrawPoint(p1, 4.0, c);
           draw.DrawPoint(p2, 4.0, c);
@@ -314,10 +314,10 @@ export abstract class b2Joint {
       }
     }
 
-  public abstract InitVelocityConstraints(data: b2SolverData): void;
+  public abstract InitVelocityConstraints(data: B2SolverData): void;
 
-  public abstract SolveVelocityConstraints(data: b2SolverData): void;
+  public abstract SolveVelocityConstraints(data: B2SolverData): void;
 
   // This returns true if the position errors are within tolerance.
-  public abstract SolvePositionConstraints(data: b2SolverData): boolean;
+  public abstract SolvePositionConstraints(data: B2SolverData): boolean;
 }

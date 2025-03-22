@@ -24,25 +24,25 @@
 
 /// You can use this to change the length scale used by your game.
 /// For example for inches you could use 39.4.
-// export const b2_lengthUnitsPerMeter: number = 1.0;
+// export const B2_lengthUnitsPerMeter: number = 1.0;
 
 /// The maximum number of vertices on a convex polygon. You cannot increase
-/// this too much because b2BlockAllocator has a maximum object size.
-// export const b2_maxPolygonVertices: number = 8;
+/// this too much because B2BlockAllocator has a maximum object size.
+// export const B2_maxPolygonVertices: number = 8;
 
 // Memory Allocation
 
 /// Implement this function to use your own memory allocator.
-export function b2Alloc(size: number): any {
+export function B2Alloc(size: number): any {
   return null;
 }
 
-/// If you implement b2Alloc, you should also implement this function.
-export function b2Free(mem: any): void {
+/// If you implement B2Alloc, you should also implement this function.
+export function B2Free(mem: any): void {
 }
 
 /// Logging function.
-export function b2Log(message: string, ...args: any[]): void {
+export function B2Log(message: string, ...args: any[]): void {
   // console.log(message, ...args);
 }
 

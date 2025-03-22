@@ -18,16 +18,16 @@
 
 // #if B2_ENABLE_CONTROLLER
 
-import { b2Controller } from "./b2_controller.js";
-import { b2TimeStep } from "../dynamics/b2_time_step.js";
-import { b2_epsilon } from "../common/b2_settings.js";
-import { b2Sqrt, b2Vec2 } from "../common/b2_math.js";
-import { b2Draw } from "../common/b2_draw.js";
+import { B2Controller } from "./b2_controller.js";
+import { B2TimeStep } from "../dynamics/b2_time_step.js";
+import { B2_epsilon } from "../common/b2_settings.js";
+import { B2Sqrt, B2Vec2 } from "../common/b2_math.js";
+import { B2Draw } from "../common/b2_draw.js";
 
 /**
  * Applies simplified gravity between every pair of bodies
  */
-export class b2GravityController extends b2Controller {
+export class B2GravityController extends B2Controller {
   /**
    * Specifies the strength of the gravitiation force
    */
@@ -38,9 +38,9 @@ export class b2GravityController extends b2Controller {
   public invSqr = true;
 
   /**
-   * @see b2Controller::Step
+   * @see B2Controller::Step
    */
-  public Step(step: b2TimeStep) {
+  public Step(step: B2TimeStep) {
     if (this.invSqr) {
       for (let i = this.m_bodyList; i; i = i.nextBody) {
         const body1 = i.body;
@@ -53,11 +53,11 @@ export class b2GravityController extends b2Controller {
           const dx = p2.x - p1.x;
           const dy = p2.y - p1.y;
           const r2 = dx * dx + dy * dy;
-          if (r2 < b2_epsilon) {
+          if (r2 < B2_epsilon) {
             continue;
           }
-          const f = b2GravityController.Step_s_f.Set(dx, dy);
-          f.SelfMul(this.G / r2 / b2Sqrt(r2) * mass1 * mass2);
+          const f = B2GravityController.Step_s_f.Set(dx, dy);
+          f.SelfMul(this.G / r2 / B2Sqrt(r2) * mass1 * mass2);
           if (body1.IsAwake()) {
             body1.ApplyForce(f, p1);
           }
@@ -78,10 +78,10 @@ export class b2GravityController extends b2Controller {
           const dx = p2.x - p1.x;
           const dy = p2.y - p1.y;
           const r2 = dx * dx + dy * dy;
-          if (r2 < b2_epsilon) {
+          if (r2 < B2_epsilon) {
             continue;
           }
-          const f = b2GravityController.Step_s_f.Set(dx, dy);
+          const f = B2GravityController.Step_s_f.Set(dx, dy);
           f.SelfMul(this.G / r2 * mass1 * mass2);
           if (body1.IsAwake()) {
             body1.ApplyForce(f, p1);
@@ -93,9 +93,9 @@ export class b2GravityController extends b2Controller {
       }
     }
   }
-  private static Step_s_f = new b2Vec2();
+  private static Step_s_f = new B2Vec2();
 
-  public Draw(draw: b2Draw) { }
+  public Draw(draw: B2Draw) { }
 }
 
 // #endif

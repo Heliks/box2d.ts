@@ -18,21 +18,21 @@
 
 // #if B2_ENABLE_CONTROLLER
 
-import { b2Controller, b2ControllerEdge } from "./b2_controller.js";
-import { b2Vec2 } from "../common/b2_math.js";
-import { b2TimeStep } from "../dynamics/b2_time_step.js";
-import { b2_epsilon } from "../common/b2_settings.js";
-import { b2Draw, b2Color } from "../common/b2_draw.js";
+import { B2Controller, B2ControllerEdge } from "./b2_controller.js";
+import { B2Vec2 } from "../common/b2_math.js";
+import { B2TimeStep } from "../dynamics/b2_time_step.js";
+import { B2_epsilon } from "../common/b2_settings.js";
+import { B2Draw, B2Color } from "../common/b2_draw.js";
 
 /**
  * Calculates buoyancy forces for fluids in the form of a half
  * plane.
  */
-export class b2BuoyancyController extends b2Controller {
+export class B2BuoyancyController extends B2Controller {
   /**
    * The outer surface normal
    */
-  public readonly normal = new b2Vec2(0, 1);
+  public readonly normal = new B2Vec2(0, 1);
   /**
    * The height of the fluid surface along the normal
    */
@@ -44,7 +44,7 @@ export class b2BuoyancyController extends b2Controller {
   /**
    * Fluid velocity, for drag calculations
    */
-  public readonly velocity = new b2Vec2(0, 0);
+  public readonly velocity = new B2Vec2(0, 0);
   /**
    * Linear drag co-efficient
    */
@@ -65,28 +65,28 @@ export class b2BuoyancyController extends b2Controller {
   /**
    * Gravity vector, if the world's gravity is not used
    */
-  public readonly gravity = new b2Vec2(0, 0);
+  public readonly gravity = new B2Vec2(0, 0);
 
-  public Step(step: b2TimeStep) {
+  public Step(step: B2TimeStep) {
     if (!this.m_bodyList) {
       return;
     }
     if (this.useWorldGravity) {
       this.gravity.Copy(this.m_bodyList.body.GetWorld().GetGravity());
     }
-    for (let i: b2ControllerEdge | null = this.m_bodyList; i; i = i.nextBody) {
+    for (let i: B2ControllerEdge | null = this.m_bodyList; i; i = i.nextBody) {
       const body = i.body;
       if (!body.IsAwake()) {
         //Buoyancy force is just a function of position,
         //so unlike most forces, it is safe to ignore sleeping bodes
         continue;
       }
-      const areac = new b2Vec2();
-      const massc = new b2Vec2();
+      const areac = new B2Vec2();
+      const massc = new B2Vec2();
       let area = 0;
       let mass = 0;
       for (let fixture = body.GetFixtureList(); fixture; fixture = fixture.m_next) {
-        const sc = new b2Vec2();
+        const sc = new B2Vec2();
         const sarea = fixture.GetShape().ComputeSubmergedArea(this.normal, this.offset, body.GetTransform(), sc);
         area += sarea;
         areac.x += sarea * sc.x;
@@ -104,10 +104,10 @@ export class b2BuoyancyController extends b2Controller {
       }
       areac.x /= area;
       areac.y /= area;
-      //    b2Vec2 localCentroid = b2MulT(body->GetXForm(),areac);
+      //    B2Vec2 localCentroid = B2MulT(body->GetXForm(),areac);
       massc.x /= mass;
       massc.y /= mass;
-      if (area < b2_epsilon) {
+      if (area < B2_epsilon) {
         continue;
       }
       //Buoyancy
@@ -115,7 +115,7 @@ export class b2BuoyancyController extends b2Controller {
       buoyancyForce.SelfMul(this.density * area);
       body.ApplyForce(buoyancyForce, massc);
       //Linear drag
-      const dragForce = body.GetLinearVelocityFromWorldPoint(areac, new b2Vec2());
+      const dragForce = body.GetLinearVelocityFromWorldPoint(areac, new B2Vec2());
       dragForce.SelfSub(this.velocity);
       dragForce.SelfMul((-this.linearDrag * area));
       body.ApplyForce(dragForce, areac);
@@ -125,16 +125,16 @@ export class b2BuoyancyController extends b2Controller {
     }
   }
 
-  public Draw(debugDraw: b2Draw) {
+  public Draw(debugDraw: B2Draw) {
     const r = 100;
-    const p1 = new b2Vec2();
-    const p2 = new b2Vec2();
+    const p1 = new B2Vec2();
+    const p2 = new B2Vec2();
     p1.x = this.normal.x * this.offset + this.normal.y * r;
     p1.y = this.normal.y * this.offset - this.normal.x * r;
     p2.x = this.normal.x * this.offset - this.normal.y * r;
     p2.y = this.normal.y * this.offset + this.normal.x * r;
 
-    const color = new b2Color(0, 0, 0.8);
+    const color = new B2Color(0, 0, 0.8);
 
     debugDraw.DrawSegment(p1, p2, color);
   }

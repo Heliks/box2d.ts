@@ -16,24 +16,24 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings.js";
-import { b2Vec2, b2Transform, XY } from "../common/b2_math.js";
-import { b2AABB, b2RayCastInput, b2RayCastOutput } from "./b2_collision.js";
-import { b2DistanceProxy } from "./b2_distance.js";
+// DEBUG: import { B2Assert } from "../common/b2_settings.js";
+import { B2Vec2, B2Transform, XY } from "../common/b2_math.js";
+import { B2AABB, B2RayCastInput, B2RayCastOutput } from "./b2_collision.js";
+import { B2DistanceProxy } from "./b2_distance.js";
 
 /// This holds the mass data computed for a shape.
-export class b2MassData {
+export class B2MassData {
   /// The mass of the shape, usually in kilograms.
   public mass: number = 0;
 
   /// The position of the shape's centroid relative to the shape's origin.
-  public readonly center: b2Vec2 = new b2Vec2(0, 0);
+  public readonly center: B2Vec2 = new B2Vec2(0, 0);
 
   /// The rotational inertia of the shape about the local origin.
   public I: number = 0;
 }
 
-export enum b2ShapeType {
+export enum B2ShapeType {
   e_unknown = -1,
   e_circleShape = 0,
   e_edgeShape = 1,
@@ -43,32 +43,32 @@ export enum b2ShapeType {
 }
 
 /// A shape is used for collision detection. You can create a shape however you like.
-/// Shapes used for simulation in b2World are created automatically when a b2Fixture
+/// Shapes used for simulation in B2World are created automatically when a B2Fixture
 /// is created. Shapes may encapsulate a one or more child shapes.
-export abstract class b2Shape {
-  public readonly m_type: b2ShapeType = b2ShapeType.e_unknown;
+export abstract class B2Shape {
+  public readonly m_type: B2ShapeType = B2ShapeType.e_unknown;
 
-	/// Radius of a shape. For polygonal shapes this must be b2_polygonRadius. There is no support for
+	/// Radius of a shape. For polygonal shapes this must be B2_polygonRadius. There is no support for
 	/// making rounded polygons.
   public m_radius: number = 0;
 
-  constructor(type: b2ShapeType, radius: number) {
+  constructor(type: B2ShapeType, radius: number) {
     this.m_type = type;
     this.m_radius = radius;
   }
 
   /// Clone the concrete shape.
-  public abstract Clone(): b2Shape;
+  public abstract Clone(): B2Shape;
 
-  public Copy(other: b2Shape): b2Shape {
-    // DEBUG: b2Assert(this.m_type === other.m_type);
+  public Copy(other: B2Shape): B2Shape {
+    // DEBUG: B2Assert(this.m_type === other.m_type);
     this.m_radius = other.m_radius;
     return this;
   }
 
   /// Get the type of this shape. You can use this to down cast to the concrete shape.
   /// @return the shape type.
-  public GetType(): b2ShapeType {
+  public GetType(): B2ShapeType {
     return this.m_type;
   }
 
@@ -78,7 +78,7 @@ export abstract class b2Shape {
   /// Test a point for containment in this shape. This only works for convex shapes.
   /// @param xf the shape world transform.
   /// @param p a point in world coordinates.
-  public abstract TestPoint(xf: b2Transform, p: XY): boolean;
+  public abstract TestPoint(xf: B2Transform, p: XY): boolean;
 
   // #if B2_ENABLE_PARTICLE
   /// Compute the distance from the current shape to the specified point. This only works for convex shapes.
@@ -86,7 +86,7 @@ export abstract class b2Shape {
   /// @param p a point in world coordinates.
   /// @param distance returns the distance from the current shape.
   /// @param normal returns the direction in which the distance increases.
-  public abstract ComputeDistance(xf: b2Transform, p: b2Vec2, normal: b2Vec2, childIndex: number): number;
+  public abstract ComputeDistance(xf: B2Transform, p: B2Vec2, normal: B2Vec2, childIndex: number): number;
   // #endif
 
   /// Cast a ray against a child shape.
@@ -94,23 +94,23 @@ export abstract class b2Shape {
   /// @param input the ray-cast input parameters.
   /// @param transform the transform to be applied to the shape.
   /// @param childIndex the child shape index
-  public abstract RayCast(output: b2RayCastOutput, input: b2RayCastInput, transform: b2Transform, childIndex: number): boolean;
+  public abstract RayCast(output: B2RayCastOutput, input: B2RayCastInput, transform: B2Transform, childIndex: number): boolean;
 
   /// Given a transform, compute the associated axis aligned bounding box for a child shape.
   /// @param aabb returns the axis aligned box.
   /// @param xf the world transform of the shape.
   /// @param childIndex the child shape
-  public abstract ComputeAABB(aabb: b2AABB, xf: b2Transform, childIndex: number): void;
+  public abstract ComputeAABB(aabb: B2AABB, xf: B2Transform, childIndex: number): void;
 
   /// Compute the mass properties of this shape using its dimensions and density.
   /// The inertia tensor is computed about the local origin.
   /// @param massData returns the mass data for this shape.
   /// @param density the density in kilograms per meter squared.
-  public abstract ComputeMass(massData: b2MassData, density: number): void;
+  public abstract ComputeMass(massData: B2MassData, density: number): void;
 
-  public abstract SetupDistanceProxy(proxy: b2DistanceProxy, index: number): void;
+  public abstract SetupDistanceProxy(proxy: B2DistanceProxy, index: number): void;
 
-  public abstract ComputeSubmergedArea(normal: b2Vec2, offset: number, xf: b2Transform, c: b2Vec2): number;
+  public abstract ComputeSubmergedArea(normal: B2Vec2, offset: number, xf: B2Transform, c: B2Vec2): number;
 
   public abstract Dump(log: (format: string, ...args: any[]) => void): void;
 }

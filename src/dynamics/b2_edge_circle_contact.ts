@@ -16,22 +16,22 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-import { b2Transform } from "../common/b2_math.js";
-import { b2CollideEdgeAndCircle } from "../collision/b2_collide_edge.js";
-import { b2Manifold } from "../collision/b2_collision.js";
-import { b2CircleShape } from "../collision/b2_circle_shape.js";
-import { b2EdgeShape } from "../collision/b2_edge_shape.js";
-import { b2Contact } from "./b2_contact.js";
+import { B2Transform } from "../common/b2_math.js";
+import { B2CollideEdgeAndCircle } from "../collision/b2_collide_edge.js";
+import { B2Manifold } from "../collision/b2_collision.js";
+import { B2CircleShape } from "../collision/b2_circle_shape.js";
+import { B2EdgeShape } from "../collision/b2_edge_shape.js";
+import { B2Contact } from "./b2_contact.js";
 
-export class b2EdgeAndCircleContact extends b2Contact<b2EdgeShape, b2CircleShape> {
-  public static Create(): b2Contact {
-    return new b2EdgeAndCircleContact();
+export class B2EdgeAndCircleContact extends B2Contact<B2EdgeShape, B2CircleShape> {
+  public static Create(): B2Contact {
+    return new B2EdgeAndCircleContact();
   }
 
-  public static Destroy(contact: b2Contact): void {
+  public static Destroy(contact: B2Contact): void {
   }
 
-  public Evaluate(manifold: b2Manifold, xfA: b2Transform, xfB: b2Transform): void {
-    b2CollideEdgeAndCircle(manifold, this.GetShapeA(), xfA, this.GetShapeB(), xfB);
+  public Evaluate(manifold: B2Manifold, xfA: B2Transform, xfB: B2Transform): void {
+    B2CollideEdgeAndCircle(manifold, this.GetShapeA(), xfA, this.GetShapeB(), xfB);
   }
 }

@@ -1,24 +1,24 @@
-import { b2_maxFloat, b2_epsilon } from "../common/b2_settings.js";
-import { b2Vec2, b2Transform } from "../common/b2_math.js";
-import { b2Manifold, b2ManifoldType } from "./b2_collision.js";
-import { b2CircleShape } from "./b2_circle_shape.js";
-import { b2PolygonShape } from "./b2_polygon_shape.js";
+import { B2_maxFloat, B2_epsilon } from "../common/b2_settings.js";
+import { B2Vec2, B2Transform } from "../common/b2_math.js";
+import { B2Manifold, B2ManifoldType } from "./b2_collision.js";
+import { B2CircleShape } from "./b2_circle_shape.js";
+import { B2PolygonShape } from "./b2_polygon_shape.js";
 
-const b2CollideCircles_s_pA: b2Vec2 = new b2Vec2();
-const b2CollideCircles_s_pB: b2Vec2 = new b2Vec2();
-export function b2CollideCircles(manifold: b2Manifold, circleA: b2CircleShape, xfA: b2Transform, circleB: b2CircleShape, xfB: b2Transform): void {
+const B2CollideCircles_s_pA: B2Vec2 = new B2Vec2();
+const B2CollideCircles_s_pB: B2Vec2 = new B2Vec2();
+export function B2CollideCircles(manifold: B2Manifold, circleA: B2CircleShape, xfA: B2Transform, circleB: B2CircleShape, xfB: B2Transform): void {
   manifold.pointCount = 0;
 
-  const pA: b2Vec2 = b2Transform.MulXV(xfA, circleA.m_p, b2CollideCircles_s_pA);
-  const pB: b2Vec2 = b2Transform.MulXV(xfB, circleB.m_p, b2CollideCircles_s_pB);
+  const pA: B2Vec2 = B2Transform.MulXV(xfA, circleA.m_p, B2CollideCircles_s_pA);
+  const pB: B2Vec2 = B2Transform.MulXV(xfB, circleB.m_p, B2CollideCircles_s_pB);
 
-  const distSqr: number = b2Vec2.DistanceSquaredVV(pA, pB);
+  const distSqr: number = B2Vec2.DistanceSquaredVV(pA, pB);
   const radius: number = circleA.m_radius + circleB.m_radius;
   if (distSqr > radius * radius) {
     return;
   }
 
-  manifold.type = b2ManifoldType.e_circles;
+  manifold.type = B2ManifoldType.e_circles;
   manifold.localPoint.Copy(circleA.m_p);
   manifold.localNormal.SetZero();
   manifold.pointCount = 1;
@@ -27,26 +27,26 @@ export function b2CollideCircles(manifold: b2Manifold, circleA: b2CircleShape, x
   manifold.points[0].id.key = 0;
 }
 
-const b2CollidePolygonAndCircle_s_c: b2Vec2 = new b2Vec2();
-const b2CollidePolygonAndCircle_s_cLocal: b2Vec2 = new b2Vec2();
-const b2CollidePolygonAndCircle_s_faceCenter: b2Vec2 = new b2Vec2();
-export function b2CollidePolygonAndCircle(manifold: b2Manifold, polygonA: b2PolygonShape, xfA: b2Transform, circleB: b2CircleShape, xfB: b2Transform): void {
+const B2CollidePolygonAndCircle_s_c: B2Vec2 = new B2Vec2();
+const B2CollidePolygonAndCircle_s_cLocal: B2Vec2 = new B2Vec2();
+const B2CollidePolygonAndCircle_s_faceCenter: B2Vec2 = new B2Vec2();
+export function B2CollidePolygonAndCircle(manifold: B2Manifold, polygonA: B2PolygonShape, xfA: B2Transform, circleB: B2CircleShape, xfB: B2Transform): void {
   manifold.pointCount = 0;
 
   // Compute circle position in the frame of the polygon.
-  const c: b2Vec2 = b2Transform.MulXV(xfB, circleB.m_p, b2CollidePolygonAndCircle_s_c);
-  const cLocal: b2Vec2 = b2Transform.MulTXV(xfA, c, b2CollidePolygonAndCircle_s_cLocal);
+  const c: B2Vec2 = B2Transform.MulXV(xfB, circleB.m_p, B2CollidePolygonAndCircle_s_c);
+  const cLocal: B2Vec2 = B2Transform.MulTXV(xfA, c, B2CollidePolygonAndCircle_s_cLocal);
 
   // Find the min separating edge.
   let normalIndex: number = 0;
-  let separation: number = (-b2_maxFloat);
+  let separation: number = (-B2_maxFloat);
   const radius: number = polygonA.m_radius + circleB.m_radius;
   const vertexCount: number = polygonA.m_count;
-  const vertices: b2Vec2[] = polygonA.m_vertices;
-  const normals: b2Vec2[] = polygonA.m_normals;
+  const vertices: B2Vec2[] = polygonA.m_vertices;
+  const normals: B2Vec2[] = polygonA.m_normals;
 
   for (let i: number = 0; i < vertexCount; ++i) {
-    const s: number = b2Vec2.DotVV(normals[i], b2Vec2.SubVV(cLocal, vertices[i], b2Vec2.s_t0));
+    const s: number = B2Vec2.DotVV(normals[i], B2Vec2.SubVV(cLocal, vertices[i], B2Vec2.s_t0));
 
     if (s > radius) {
       // Early out.
@@ -62,54 +62,54 @@ export function b2CollidePolygonAndCircle(manifold: b2Manifold, polygonA: b2Poly
   // Vertices that subtend the incident face.
   const vertIndex1: number = normalIndex;
   const vertIndex2: number = (vertIndex1 + 1) % vertexCount;
-  const v1: b2Vec2 = vertices[vertIndex1];
-  const v2: b2Vec2 = vertices[vertIndex2];
+  const v1: B2Vec2 = vertices[vertIndex1];
+  const v2: B2Vec2 = vertices[vertIndex2];
 
   // If the center is inside the polygon ...
-  if (separation < b2_epsilon) {
+  if (separation < B2_epsilon) {
     manifold.pointCount = 1;
-    manifold.type = b2ManifoldType.e_faceA;
+    manifold.type = B2ManifoldType.e_faceA;
     manifold.localNormal.Copy(normals[normalIndex]);
-    b2Vec2.MidVV(v1, v2, manifold.localPoint);
+    B2Vec2.MidVV(v1, v2, manifold.localPoint);
     manifold.points[0].localPoint.Copy(circleB.m_p);
     manifold.points[0].id.key = 0;
     return;
   }
 
   // Compute barycentric coordinates
-  const u1: number = b2Vec2.DotVV(b2Vec2.SubVV(cLocal, v1, b2Vec2.s_t0), b2Vec2.SubVV(v2, v1, b2Vec2.s_t1));
-  const u2: number = b2Vec2.DotVV(b2Vec2.SubVV(cLocal, v2, b2Vec2.s_t0), b2Vec2.SubVV(v1, v2, b2Vec2.s_t1));
+  const u1: number = B2Vec2.DotVV(B2Vec2.SubVV(cLocal, v1, B2Vec2.s_t0), B2Vec2.SubVV(v2, v1, B2Vec2.s_t1));
+  const u2: number = B2Vec2.DotVV(B2Vec2.SubVV(cLocal, v2, B2Vec2.s_t0), B2Vec2.SubVV(v1, v2, B2Vec2.s_t1));
   if (u1 <= 0) {
-    if (b2Vec2.DistanceSquaredVV(cLocal, v1) > radius * radius) {
+    if (B2Vec2.DistanceSquaredVV(cLocal, v1) > radius * radius) {
       return;
     }
 
     manifold.pointCount = 1;
-    manifold.type = b2ManifoldType.e_faceA;
-    b2Vec2.SubVV(cLocal, v1, manifold.localNormal).SelfNormalize();
+    manifold.type = B2ManifoldType.e_faceA;
+    B2Vec2.SubVV(cLocal, v1, manifold.localNormal).SelfNormalize();
     manifold.localPoint.Copy(v1);
     manifold.points[0].localPoint.Copy(circleB.m_p);
     manifold.points[0].id.key = 0;
   } else if (u2 <= 0) {
-    if (b2Vec2.DistanceSquaredVV(cLocal, v2) > radius * radius) {
+    if (B2Vec2.DistanceSquaredVV(cLocal, v2) > radius * radius) {
       return;
     }
 
     manifold.pointCount = 1;
-    manifold.type = b2ManifoldType.e_faceA;
-    b2Vec2.SubVV(cLocal, v2, manifold.localNormal).SelfNormalize();
+    manifold.type = B2ManifoldType.e_faceA;
+    B2Vec2.SubVV(cLocal, v2, manifold.localNormal).SelfNormalize();
     manifold.localPoint.Copy(v2);
     manifold.points[0].localPoint.Copy(circleB.m_p);
     manifold.points[0].id.key = 0;
   } else {
-    const faceCenter: b2Vec2 = b2Vec2.MidVV(v1, v2, b2CollidePolygonAndCircle_s_faceCenter);
-    const separation = b2Vec2.DotVV(b2Vec2.SubVV(cLocal, faceCenter, b2Vec2.s_t1), normals[vertIndex1]);
+    const faceCenter: B2Vec2 = B2Vec2.MidVV(v1, v2, B2CollidePolygonAndCircle_s_faceCenter);
+    const separation = B2Vec2.DotVV(B2Vec2.SubVV(cLocal, faceCenter, B2Vec2.s_t1), normals[vertIndex1]);
     if (separation > radius) {
       return;
     }
 
     manifold.pointCount = 1;
-    manifold.type = b2ManifoldType.e_faceA;
+    manifold.type = B2ManifoldType.e_faceA;
     manifold.localNormal.Copy(normals[vertIndex1]).SelfNormalize();
     manifold.localPoint.Copy(faceCenter);
     manifold.points[0].localPoint.Copy(circleB.m_p);
