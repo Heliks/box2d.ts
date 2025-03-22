@@ -16,23 +16,23 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-// import { b2_lengthUnitsPerMeter } from "./b2_settings.js";
+// import { B2_lengthUnitsPerMeter } from "./b2_settings.js";
 
-export function b2Assert(condition: boolean, ...args: any[]): asserts condition {
+export function B2Assert(condition: boolean, ...args: any[]): asserts condition {
   if (!condition) {
     // debugger;
     throw new Error(...args);
   }
 }
 
-export function b2Maybe<T>(value: T | undefined, def: T): T {
+export function B2Maybe<T>(value: T | undefined, def: T): T {
   return value !== undefined ? value : def;
 }
 
-export const b2_maxFloat: number = 1E+37; // FLT_MAX instead of Number.MAX_VALUE;
-export const b2_epsilon: number = 1E-5; // FLT_EPSILON instead of Number.EPSILON;
-export const b2_epsilon_sq: number = (b2_epsilon * b2_epsilon);
-export const b2_pi: number = 3.14159265359; // Math.PI;
+export const B2_maxFloat: number = 1E+37; // FLT_MAX instead of Number.MAX_VALUE;
+export const B2_epsilon: number = 1E-5; // FLT_EPSILON instead of Number.EPSILON;
+export const B2_epsilon_sq: number = (B2_epsilon * B2_epsilon);
+export const B2_pi: number = 3.14159265359; // Math.PI;
 
 /// @file
 /// Global tuning constants based on meters-kilograms-seconds (MKS) units.
@@ -42,147 +42,147 @@ export const b2_pi: number = 3.14159265359; // Math.PI;
 
 /// You can use this to change the length scale used by your game.
 /// For example for inches you could use 39.4.
-export const b2_lengthUnitsPerMeter: number = 1.0;
+export const B2_lengthUnitsPerMeter: number = 1.0;
 
 /// The maximum number of vertices on a convex polygon. You cannot increase
-/// this too much because b2BlockAllocator has a maximum object size.
-export const b2_maxPolygonVertices: number = 8;
+/// this too much because B2BlockAllocator has a maximum object size.
+export const B2_maxPolygonVertices: number = 8;
 
 // Collision
 
 /// The maximum number of contact points between two convex shapes. Do
 /// not change this value.
-export const b2_maxManifoldPoints: number = 2;
+export const B2_maxManifoldPoints: number = 2;
 
 /// This is used to fatten AABBs in the dynamic tree. This allows proxies
 /// to move by a small amount without triggering a tree adjustment.
 /// This is in meters.
-export const b2_aabbExtension: number = 0.1 * b2_lengthUnitsPerMeter;
+export const B2_aabbExtension: number = 0.1 * B2_lengthUnitsPerMeter;
 
 /// This is used to fatten AABBs in the dynamic tree. This is used to predict
 /// the future position based on the current displacement.
 /// This is a dimensionless multiplier.
-export const b2_aabbMultiplier: number = 4;
+export const B2_aabbMultiplier: number = 4;
 
 /// A small length used as a collision and constraint tolerance. Usually it is
 /// chosen to be numerically significant, but visually insignificant.
-export const b2_linearSlop: number = 0.005 * b2_lengthUnitsPerMeter;
+export const B2_linearSlop: number = 0.005 * B2_lengthUnitsPerMeter;
 
 /// A small angle used as a collision and constraint tolerance. Usually it is
 /// chosen to be numerically significant, but visually insignificant.
-export const b2_angularSlop: number = 2 / 180 * b2_pi;
+export const B2_angularSlop: number = 2 / 180 * B2_pi;
 
 /// The radius of the polygon/edge shape skin. This should not be modified. Making
 /// this smaller means polygons will have an insufficient buffer for continuous collision.
 /// Making it larger may create artifacts for vertex collision.
-export const b2_polygonRadius: number = 2 * b2_linearSlop;
+export const B2_polygonRadius: number = 2 * B2_linearSlop;
 
 /// Maximum number of sub-steps per contact in continuous physics simulation.
-export const b2_maxSubSteps: number = 8;
+export const B2_maxSubSteps: number = 8;
 
 // Dynamics
 
 /// Maximum number of contacts to be handled to solve a TOI impact.
-export const b2_maxTOIContacts: number = 32;
+export const B2_maxTOIContacts: number = 32;
 
 /// The maximum linear position correction used when solving constraints. This helps to
 /// prevent overshoot.
-export const b2_maxLinearCorrection: number = 0.2 * b2_lengthUnitsPerMeter;
+export const B2_maxLinearCorrection: number = 0.2 * B2_lengthUnitsPerMeter;
 
 /// The maximum angular position correction used when solving constraints. This helps to
 /// prevent overshoot.
-export const b2_maxAngularCorrection: number = 8 / 180 * b2_pi;
+export const B2_maxAngularCorrection: number = 8 / 180 * B2_pi;
 
 /// The maximum linear velocity of a body. This limit is very large and is used
 /// to prevent numerical problems. You shouldn't need to adjust this.
-export const b2_maxTranslation: number = 2 * b2_lengthUnitsPerMeter;
-export const b2_maxTranslationSquared: number = b2_maxTranslation * b2_maxTranslation;
+export const B2_maxTranslation: number = 2 * B2_lengthUnitsPerMeter;
+export const B2_maxTranslationSquared: number = B2_maxTranslation * B2_maxTranslation;
 
 /// The maximum angular velocity of a body. This limit is very large and is used
 /// to prevent numerical problems. You shouldn't need to adjust this.
-export const b2_maxRotation: number = 0.5 * b2_pi;
-export const b2_maxRotationSquared: number = b2_maxRotation * b2_maxRotation;
+export const B2_maxRotation: number = 0.5 * B2_pi;
+export const B2_maxRotationSquared: number = B2_maxRotation * B2_maxRotation;
 
 /// This scale factor controls how fast overlap is resolved. Ideally this would be 1 so
 /// that overlap is removed in one time step. However using values close to 1 often lead
 /// to overshoot.
-export const b2_baumgarte: number = 0.2;
-export const b2_toiBaumgarte: number = 0.75;
+export const B2_baumgarte: number = 0.2;
+export const B2_toiBaumgarte: number = 0.75;
 
 // #if B2_ENABLE_PARTICLE
 
 // Particle
 
 /// A symbolic constant that stands for particle allocation error.
-export const b2_invalidParticleIndex: number = -1;
+export const B2_invalidParticleIndex: number = -1;
 
-export const b2_maxParticleIndex: number = 0x7FFFFFFF;
+export const B2_maxParticleIndex: number = 0x7FFFFFFF;
 
 /// The default distance between particles, multiplied by the particle diameter.
-export const b2_particleStride: number = 0.75;
+export const B2_particleStride: number = 0.75;
 
 /// The minimum particle weight that produces pressure.
-export const b2_minParticleWeight: number = 1.0;
+export const B2_minParticleWeight: number = 1.0;
 
 /// The upper limit for particle pressure.
-export const b2_maxParticlePressure: number = 0.25;
+export const B2_maxParticlePressure: number = 0.25;
 
 /// The upper limit for force between particles.
-export const b2_maxParticleForce: number = 0.5;
+export const B2_maxParticleForce: number = 0.5;
 
 /// The maximum distance between particles in a triad, multiplied by the particle diameter.
-export const b2_maxTriadDistance: number = 2.0 * b2_lengthUnitsPerMeter;
-export const b2_maxTriadDistanceSquared: number = (b2_maxTriadDistance * b2_maxTriadDistance);
+export const B2_maxTriadDistance: number = 2.0 * B2_lengthUnitsPerMeter;
+export const B2_maxTriadDistanceSquared: number = (B2_maxTriadDistance * B2_maxTriadDistance);
 
 /// The initial size of particle data buffers.
-export const b2_minParticleSystemBufferCapacity: number = 256;
+export const B2_minParticleSystemBufferCapacity: number = 256;
 
 /// The time into the future that collisions against barrier particles will be detected.
-export const b2_barrierCollisionTime: number = 2.5;
+export const B2_barrierCollisionTime: number = 2.5;
 
 // #endif
 
 // Sleep
 
 /// The time that a body must be still before it will go to sleep.
-export const b2_timeToSleep: number = 0.5;
+export const B2_timeToSleep: number = 0.5;
 
 /// A body cannot sleep if its linear velocity is above this tolerance.
-export const b2_linearSleepTolerance: number = 0.01 * b2_lengthUnitsPerMeter;
+export const B2_linearSleepTolerance: number = 0.01 * B2_lengthUnitsPerMeter;
 
 /// A body cannot sleep if its angular velocity is above this tolerance.
-export const b2_angularSleepTolerance: number = 2 / 180 * b2_pi;
+export const B2_angularSleepTolerance: number = 2 / 180 * B2_pi;
 
-// FILE* b2_dumpFile = nullptr;
+// FILE* B2_dumpFile = nullptr;
 
-// void b2OpenDump(const char* fileName)
+// void B2OpenDump(const char* fileName)
 // {
-// 	b2Assert(b2_dumpFile == nullptr);
-// 	b2_dumpFile = fopen(fileName, "w");
+// 	B2Assert(B2_dumpFile == nullptr);
+// 	B2_dumpFile = fopen(fileName, "w");
 // }
 
-// void b2Dump(const char* string, ...)
+// void B2Dump(const char* string, ...)
 // {
-// 	if (b2_dumpFile == nullptr)
+// 	if (B2_dumpFile == nullptr)
 // 	{
 // 		return;
 // 	}
 
 // 	va_list args;
 // 	va_start(args, string);
-// 	vfprintf(b2_dumpFile, string, args);
+// 	vfprintf(B2_dumpFile, string, args);
 // 	va_end(args);
 // }
 
-// void b2CloseDump()
+// void B2CloseDump()
 // {
-// 	fclose(b2_dumpFile);
-// 	b2_dumpFile = nullptr;
+// 	fclose(B2_dumpFile);
+// 	B2_dumpFile = nullptr;
 // }
 
 /// Version numbering scheme.
 /// See http://en.wikipedia.org/wiki/Software_versioning
-export class b2Version {
+export class B2Version {
   public major: number = 0; ///< significant changes
   public minor: number = 0; ///< incremental changes
   public revision: number = 0; ///< bug fixes
@@ -199,20 +199,20 @@ export class b2Version {
 }
 
 /// Current version.
-export const b2_version: b2Version = new b2Version(2, 4, 1);
+export const B2_version: B2Version = new B2Version(2, 4, 1);
 
-export const b2_branch: string = "master";
-export const b2_commit: string = "9ebbbcd960ad424e03e5de6e66a40764c16f51bc";
+export const B2_branch: string = "master";
+export const B2_commit: string = "9ebbbcd960ad424e03e5de6e66a40764c16f51bc";
 
-export function b2ParseInt(v: string): number {
+export function B2ParseInt(v: string): number {
   return parseInt(v, 10);
 }
 
-export function b2ParseUInt(v: string): number {
+export function B2ParseUInt(v: string): number {
   return Math.abs(parseInt(v, 10));
 }
 
-export function b2MakeArray<T>(length: number, init: (i: number) => T): T[] {
+export function B2MakeArray<T>(length: number, init: (i: number) => T): T[] {
   const a: T[] = new Array<T>(length);
   for (let i: number = 0; i < length; ++i) {
     a[i] = init(i);
@@ -220,7 +220,7 @@ export function b2MakeArray<T>(length: number, init: (i: number) => T): T[] {
   return a;
 }
 
-export function b2MakeNullArray<T>(length: number): Array<T | null> {
+export function B2MakeNullArray<T>(length: number): Array<T | null> {
   const a: Array<T | null> = new Array<T | null>(length);
   for (let i: number = 0; i < length; ++i) {
     a[i] = null;
@@ -228,7 +228,7 @@ export function b2MakeNullArray<T>(length: number): Array<T | null> {
   return a;
 }
 
-export function b2MakeNumberArray(length: number, init: number = 0): number[] {
+export function B2MakeNumberArray(length: number, init: number = 0): number[] {
   const a: number[] = new Array<number>(length);
   for (let i: number = 0; i < length; ++i) {
     a[i] = init;

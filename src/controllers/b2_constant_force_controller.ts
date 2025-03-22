@@ -18,21 +18,21 @@
 
 // #if B2_ENABLE_CONTROLLER
 
-import { b2Controller } from "./b2_controller.js";
-import { b2Vec2 } from "../common/b2_math.js";
-import { b2TimeStep } from "../dynamics/b2_time_step.js";
-import { b2Draw } from "../common/b2_draw.js";
+import { B2Controller } from "./b2_controller.js";
+import { B2Vec2 } from "../common/b2_math.js";
+import { B2TimeStep } from "../dynamics/b2_time_step.js";
+import { B2Draw } from "../common/b2_draw.js";
 
 /**
  * Applies a force every frame
  */
-export class b2ConstantForceController extends b2Controller {
+export class B2ConstantForceController extends B2Controller {
   /**
    * The force to apply
    */
-  public readonly F = new b2Vec2(0, 0);
+  public readonly F = new B2Vec2(0, 0);
 
-  public Step(step: b2TimeStep) {
+  public Step(step: B2TimeStep) {
     for (let i = this.m_bodyList; i; i = i.nextBody) {
       const body = i.body;
       if (!body.IsAwake()) {
@@ -42,7 +42,7 @@ export class b2ConstantForceController extends b2Controller {
     }
   }
 
-  public Draw(draw: b2Draw) {}
+  public Draw(draw: B2Draw) {}
 }
 
 // #endif

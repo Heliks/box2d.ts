@@ -16,22 +16,22 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-import { b2Transform } from "../common/b2_math.js";
-import { b2CollidePolygons } from "../collision/b2_collide_polygon.js";
-import { b2Manifold } from "../collision/b2_collision.js";
-import { b2PolygonShape } from "../collision/b2_polygon_shape.js";
-import { b2Contact } from "./b2_contact.js";
+import { B2Transform } from "../common/b2_math.js";
+import { B2CollidePolygons } from "../collision/b2_collide_polygon.js";
+import { B2Manifold } from "../collision/b2_collision.js";
+import { B2PolygonShape } from "../collision/b2_polygon_shape.js";
+import { B2Contact } from "./b2_contact.js";
 
-export class b2PolygonContact extends b2Contact<b2PolygonShape, b2PolygonShape> {
-  public static Create(): b2Contact {
-    return new b2PolygonContact();
+export class B2PolygonContact extends B2Contact<B2PolygonShape, B2PolygonShape> {
+  public static Create(): B2Contact {
+    return new B2PolygonContact();
   }
 
-  public static Destroy(contact: b2Contact): void {
+  public static Destroy(contact: B2Contact): void {
   }
 
-  public Evaluate(manifold: b2Manifold, xfA: b2Transform, xfB: b2Transform): void {
-    b2CollidePolygons(
+  public Evaluate(manifold: B2Manifold, xfA: B2Transform, xfB: B2Transform): void {
+    B2CollidePolygons(
       manifold,
       this.GetShapeA(), xfA,
       this.GetShapeB(), xfB);

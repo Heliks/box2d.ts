@@ -16,15 +16,15 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings.js";
-import { b2_linearSlop, b2Maybe } from "../common/b2_settings.js";
-import { b2Abs, b2Clamp, b2Vec2, b2Rot, XY, b2Max, b2Min, b2Transform } from "../common/b2_math.js";
-import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint.js";
-import { b2SolverData } from "./b2_time_step.js";
-import { b2Body } from "./b2_body.js";
-import { b2Draw, b2Color } from "../common/b2_draw.js";
+// DEBUG: import { B2Assert } from "../common/b2_settings.js";
+import { B2_linearSlop, B2Maybe } from "../common/b2_settings.js";
+import { B2Abs, B2Clamp, B2Vec2, B2Rot, XY, B2Max, B2Min, B2Transform } from "../common/b2_math.js";
+import { B2Joint, B2JointDef, B2JointType, B2IJointDef } from "./b2_joint.js";
+import { B2SolverData } from "./b2_time_step.js";
+import { B2Body } from "./b2_body.js";
+import { B2Draw, B2Color } from "../common/b2_draw.js";
 
-export interface b2IWheelJointDef extends b2IJointDef {
+export interface B2IWheelJointDef extends B2IJointDef {
   /// The local anchor point relative to bodyA's origin.
   localAnchorA?: XY;
 
@@ -65,12 +65,12 @@ export interface b2IWheelJointDef extends b2IJointDef {
 /// can violate the constraint slightly. The joint translation is zero
 /// when the local anchor points coincide in world space. Using local
 /// anchors and a local axis helps when saving and loading a game.
-export class b2WheelJointDef extends b2JointDef implements b2IWheelJointDef {
-  public readonly localAnchorA: b2Vec2 = new b2Vec2(0, 0);
+export class B2WheelJointDef extends B2JointDef implements B2IWheelJointDef {
+  public readonly localAnchorA: B2Vec2 = new B2Vec2(0, 0);
 
-  public readonly localAnchorB: b2Vec2 = new b2Vec2(0, 0);
+  public readonly localAnchorB: B2Vec2 = new B2Vec2(0, 0);
 
-  public readonly localAxisA: b2Vec2 = new b2Vec2(1, 0);
+  public readonly localAxisA: B2Vec2 = new B2Vec2(1, 0);
 
   public enableLimit: boolean = false;
 
@@ -89,10 +89,10 @@ export class b2WheelJointDef extends b2JointDef implements b2IWheelJointDef {
   public damping: number = 0;
 
   constructor() {
-    super(b2JointType.e_wheelJoint);
+    super(B2JointType.e_wheelJoint);
   }
 
-  public Initialize(bA: b2Body, bB: b2Body, anchor: XY, axis: XY): void {
+  public Initialize(bA: B2Body, bB: B2Body, anchor: XY, axis: XY): void {
     this.bodyA = bA;
     this.bodyB = bB;
     this.bodyA.GetLocalPoint(anchor, this.localAnchorA);
@@ -101,11 +101,11 @@ export class b2WheelJointDef extends b2JointDef implements b2IWheelJointDef {
   }
 }
 
-export class b2WheelJoint extends b2Joint {
-  public readonly m_localAnchorA: b2Vec2 = new b2Vec2();
-  public readonly m_localAnchorB: b2Vec2 = new b2Vec2();
-  public readonly m_localXAxisA: b2Vec2 = new b2Vec2();
-  public readonly m_localYAxisA: b2Vec2 = new b2Vec2();
+export class B2WheelJoint extends B2Joint {
+  public readonly m_localAnchorA: B2Vec2 = new B2Vec2();
+  public readonly m_localAnchorB: B2Vec2 = new B2Vec2();
+  public readonly m_localXAxisA: B2Vec2 = new B2Vec2();
+  public readonly m_localYAxisA: B2Vec2 = new B2Vec2();
 
   public m_impulse: number = 0;
   public m_motorImpulse: number = 0;
@@ -129,15 +129,15 @@ export class b2WheelJoint extends b2Joint {
   // Solver temp
   public m_indexA: number = 0;
   public m_indexB: number = 0;
-  public readonly m_localCenterA: b2Vec2 = new b2Vec2();
-  public readonly m_localCenterB: b2Vec2 = new b2Vec2();
+  public readonly m_localCenterA: B2Vec2 = new B2Vec2();
+  public readonly m_localCenterB: B2Vec2 = new B2Vec2();
   public m_invMassA: number = 0;
   public m_invMassB: number = 0;
   public m_invIA: number = 0;
   public m_invIB: number = 0;
 
-  public readonly m_ax: b2Vec2 = new b2Vec2();
-  public readonly m_ay: b2Vec2 = new b2Vec2();
+  public readonly m_ax: B2Vec2 = new B2Vec2();
+  public readonly m_ay: B2Vec2 = new B2Vec2();
   public m_sAx: number = 0;
   public m_sBx: number = 0;
   public m_sAy: number = 0;
@@ -151,34 +151,34 @@ export class b2WheelJoint extends b2Joint {
   public m_bias: number = 0;
   public m_gamma: number = 0;
 
-  public readonly m_qA: b2Rot = new b2Rot();
-  public readonly m_qB: b2Rot = new b2Rot();
-  public readonly m_lalcA: b2Vec2 = new b2Vec2();
-  public readonly m_lalcB: b2Vec2 = new b2Vec2();
-  public readonly m_rA: b2Vec2 = new b2Vec2();
-  public readonly m_rB: b2Vec2 = new b2Vec2();
+  public readonly m_qA: B2Rot = new B2Rot();
+  public readonly m_qB: B2Rot = new B2Rot();
+  public readonly m_lalcA: B2Vec2 = new B2Vec2();
+  public readonly m_lalcB: B2Vec2 = new B2Vec2();
+  public readonly m_rA: B2Vec2 = new B2Vec2();
+  public readonly m_rB: B2Vec2 = new B2Vec2();
 
-  constructor(def: b2IWheelJointDef) {
+  constructor(def: B2IWheelJointDef) {
     super(def);
 
-    this.m_localAnchorA.Copy(b2Maybe(def.localAnchorA, b2Vec2.ZERO));
-    this.m_localAnchorB.Copy(b2Maybe(def.localAnchorB, b2Vec2.ZERO));
-    this.m_localXAxisA.Copy(b2Maybe(def.localAxisA, b2Vec2.UNITX));
-    b2Vec2.CrossOneV(this.m_localXAxisA, this.m_localYAxisA);
+    this.m_localAnchorA.Copy(B2Maybe(def.localAnchorA, B2Vec2.ZERO));
+    this.m_localAnchorB.Copy(B2Maybe(def.localAnchorB, B2Vec2.ZERO));
+    this.m_localXAxisA.Copy(B2Maybe(def.localAxisA, B2Vec2.UNITX));
+    B2Vec2.CrossOneV(this.m_localXAxisA, this.m_localYAxisA);
 
-    this.m_lowerTranslation = b2Maybe(def.lowerTranslation, 0);
-    this.m_upperTranslation = b2Maybe(def.upperTranslation, 0);
-    this.m_enableLimit = b2Maybe(def.enableLimit, false);
+    this.m_lowerTranslation = B2Maybe(def.lowerTranslation, 0);
+    this.m_upperTranslation = B2Maybe(def.upperTranslation, 0);
+    this.m_enableLimit = B2Maybe(def.enableLimit, false);
 
-    this.m_maxMotorTorque = b2Maybe(def.maxMotorTorque, 0);
-    this.m_motorSpeed = b2Maybe(def.motorSpeed, 0);
-    this.m_enableMotor = b2Maybe(def.enableMotor, false);
+    this.m_maxMotorTorque = B2Maybe(def.maxMotorTorque, 0);
+    this.m_motorSpeed = B2Maybe(def.motorSpeed, 0);
+    this.m_enableMotor = B2Maybe(def.enableMotor, false);
 
     this.m_ax.SetZero();
     this.m_ay.SetZero();
 
-    this.m_stiffness = b2Maybe(def.stiffness, 0);
-    this.m_damping = b2Maybe(def.damping, 0);
+    this.m_stiffness = B2Maybe(def.stiffness, 0);
+    this.m_damping = B2Maybe(def.damping, 0);
   }
 
   public GetMotorSpeed(): number {
@@ -205,9 +205,9 @@ export class b2WheelJoint extends b2Joint {
     return this.m_damping;
   }
 
-  private static InitVelocityConstraints_s_d = new b2Vec2();
-  private static InitVelocityConstraints_s_P = new b2Vec2();
-  public InitVelocityConstraints(data: b2SolverData): void {
+  private static InitVelocityConstraints_s_d = new B2Vec2();
+  private static InitVelocityConstraints_s_P = new B2Vec2();
+  public InitVelocityConstraints(data: B2SolverData): void {
     this.m_indexA = this.m_bodyA.m_islandIndex;
     this.m_indexB = this.m_bodyB.m_islandIndex;
     this.m_localCenterA.Copy(this.m_bodyA.m_sweep.localCenter);
@@ -220,39 +220,39 @@ export class b2WheelJoint extends b2Joint {
     const mA: number = this.m_invMassA, mB: number = this.m_invMassB;
     const iA: number = this.m_invIA, iB: number = this.m_invIB;
 
-    const cA: b2Vec2 = data.positions[this.m_indexA].c;
+    const cA: B2Vec2 = data.positions[this.m_indexA].c;
     const aA: number = data.positions[this.m_indexA].a;
-    const vA: b2Vec2 = data.velocities[this.m_indexA].v;
+    const vA: B2Vec2 = data.velocities[this.m_indexA].v;
     let wA: number = data.velocities[this.m_indexA].w;
 
-    const cB: b2Vec2 = data.positions[this.m_indexB].c;
+    const cB: B2Vec2 = data.positions[this.m_indexB].c;
     const aB: number = data.positions[this.m_indexB].a;
-    const vB: b2Vec2 = data.velocities[this.m_indexB].v;
+    const vB: B2Vec2 = data.velocities[this.m_indexB].v;
     let wB: number = data.velocities[this.m_indexB].w;
 
-    const qA: b2Rot = this.m_qA.SetAngle(aA), qB: b2Rot = this.m_qB.SetAngle(aB);
+    const qA: B2Rot = this.m_qA.SetAngle(aA), qB: B2Rot = this.m_qB.SetAngle(aB);
 
     // Compute the effective masses.
-    // b2Vec2 rA = b2Mul(qA, m_localAnchorA - m_localCenterA);
-    b2Vec2.SubVV(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
-    const rA: b2Vec2 = b2Rot.MulRV(qA, this.m_lalcA, this.m_rA);
-    // b2Vec2 rB = b2Mul(qB, m_localAnchorB - m_localCenterB);
-    b2Vec2.SubVV(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
-    const rB: b2Vec2 = b2Rot.MulRV(qB, this.m_lalcB, this.m_rB);
-    // b2Vec2 d = cB + rB - cA - rA;
-    const d: b2Vec2 = b2Vec2.SubVV(
-      b2Vec2.AddVV(cB, rB, b2Vec2.s_t0),
-      b2Vec2.AddVV(cA, rA, b2Vec2.s_t1),
-      b2WheelJoint.InitVelocityConstraints_s_d);
+    // B2Vec2 rA = B2Mul(qA, m_localAnchorA - m_localCenterA);
+    B2Vec2.SubVV(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
+    const rA: B2Vec2 = B2Rot.MulRV(qA, this.m_lalcA, this.m_rA);
+    // B2Vec2 rB = B2Mul(qB, m_localAnchorB - m_localCenterB);
+    B2Vec2.SubVV(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
+    const rB: B2Vec2 = B2Rot.MulRV(qB, this.m_lalcB, this.m_rB);
+    // B2Vec2 d = cB + rB - cA - rA;
+    const d: B2Vec2 = B2Vec2.SubVV(
+      B2Vec2.AddVV(cB, rB, B2Vec2.s_t0),
+      B2Vec2.AddVV(cA, rA, B2Vec2.s_t1),
+      B2WheelJoint.InitVelocityConstraints_s_d);
 
     // Point to line constraint
     {
-      // m_ay = b2Mul(qA, m_localYAxisA);
-      b2Rot.MulRV(qA, this.m_localYAxisA, this.m_ay);
-      // m_sAy = b2Cross(d + rA, m_ay);
-      this.m_sAy = b2Vec2.CrossVV(b2Vec2.AddVV(d, rA, b2Vec2.s_t0), this.m_ay);
-      // m_sBy = b2Cross(rB, m_ay);
-      this.m_sBy = b2Vec2.CrossVV(rB, this.m_ay);
+      // m_ay = B2Mul(qA, m_localYAxisA);
+      B2Rot.MulRV(qA, this.m_localYAxisA, this.m_ay);
+      // m_sAy = B2Cross(d + rA, m_ay);
+      this.m_sAy = B2Vec2.CrossVV(B2Vec2.AddVV(d, rA, B2Vec2.s_t0), this.m_ay);
+      // m_sBy = B2Cross(rB, m_ay);
+      this.m_sBy = B2Vec2.CrossVV(rB, this.m_ay);
 
       this.m_mass = mA + mB + iA * this.m_sAy * this.m_sAy + iB * this.m_sBy * this.m_sBy;
 
@@ -262,9 +262,9 @@ export class b2WheelJoint extends b2Joint {
     }
 
     // Spring constraint
-    b2Rot.MulRV(qA, this.m_localXAxisA, this.m_ax); // m_ax = b2Mul(qA, m_localXAxisA);
-    this.m_sAx = b2Vec2.CrossVV(b2Vec2.AddVV(d, rA, b2Vec2.s_t0), this.m_ax);
-    this.m_sBx = b2Vec2.CrossVV(rB, this.m_ax);
+    B2Rot.MulRV(qA, this.m_localXAxisA, this.m_ax); // m_ax = B2Mul(qA, m_localXAxisA);
+    this.m_sAx = B2Vec2.CrossVV(B2Vec2.AddVV(d, rA, B2Vec2.s_t0), this.m_ax);
+    this.m_sBx = B2Vec2.CrossVV(rB, this.m_ax);
 
     const invMass: number = mA + mB + iA * this.m_sAx * this.m_sAx + iB * this.m_sBx * this.m_sBx;
     if (invMass > 0.0) {
@@ -280,7 +280,7 @@ export class b2WheelJoint extends b2Joint {
     if (this.m_stiffness > 0.0 && invMass > 0.0) {
       this.m_springMass = 1.0 / invMass;
 
-      const C: number = b2Vec2.DotVV(d, this.m_ax);
+      const C: number = B2Vec2.DotVV(d, this.m_ax);
 
       // magic formulas
       const h: number = data.step.dt;
@@ -300,7 +300,7 @@ export class b2WheelJoint extends b2Joint {
     }
 
     if (this.m_enableLimit) {
-      this.m_translation = b2Vec2.DotVV(this.m_ax, d);
+      this.m_translation = B2Vec2.DotVV(this.m_ax, d);
     } else {
       this.m_lowerImpulse = 0.0;
       this.m_upperImpulse = 0.0;
@@ -323,11 +323,11 @@ export class b2WheelJoint extends b2Joint {
       this.m_motorImpulse *= data.step.dtRatio;
 
       const axialImpulse: number = this.m_springImpulse + this.m_lowerImpulse - this.m_upperImpulse;
-      // b2Vec2 P = m_impulse * m_ay + m_springImpulse * m_ax;
-      const P: b2Vec2 = b2Vec2.AddVV(
-        b2Vec2.MulSV(this.m_impulse, this.m_ay, b2Vec2.s_t0),
-        b2Vec2.MulSV(axialImpulse, this.m_ax, b2Vec2.s_t1),
-        b2WheelJoint.InitVelocityConstraints_s_P);
+      // B2Vec2 P = m_impulse * m_ay + m_springImpulse * m_ax;
+      const P: B2Vec2 = B2Vec2.AddVV(
+        B2Vec2.MulSV(this.m_impulse, this.m_ay, B2Vec2.s_t0),
+        B2Vec2.MulSV(axialImpulse, this.m_ax, B2Vec2.s_t1),
+        B2WheelJoint.InitVelocityConstraints_s_P);
       // float32 LA = m_impulse * m_sAy + m_springImpulse * m_sAx + m_motorImpulse;
       const LA: number = this.m_impulse * this.m_sAy + axialImpulse * this.m_sAx + this.m_motorImpulse;
       // float32 LB = m_impulse * m_sBy + m_springImpulse * m_sBx + m_motorImpulse;
@@ -354,24 +354,24 @@ export class b2WheelJoint extends b2Joint {
     data.velocities[this.m_indexB].w = wB;
   }
 
-  private static SolveVelocityConstraints_s_P = new b2Vec2();
-  public SolveVelocityConstraints(data: b2SolverData): void {
+  private static SolveVelocityConstraints_s_P = new B2Vec2();
+  public SolveVelocityConstraints(data: B2SolverData): void {
     const mA: number = this.m_invMassA, mB: number = this.m_invMassB;
     const iA: number = this.m_invIA, iB: number = this.m_invIB;
 
-    const vA: b2Vec2 = data.velocities[this.m_indexA].v;
+    const vA: B2Vec2 = data.velocities[this.m_indexA].v;
     let wA: number = data.velocities[this.m_indexA].w;
-    const vB: b2Vec2 = data.velocities[this.m_indexB].v;
+    const vB: B2Vec2 = data.velocities[this.m_indexB].v;
     let wB: number = data.velocities[this.m_indexB].w;
 
     // Solve spring constraint
     {
-      const Cdot: number = b2Vec2.DotVV(this.m_ax, b2Vec2.SubVV(vB, vA, b2Vec2.s_t0)) + this.m_sBx * wB - this.m_sAx * wA;
+      const Cdot: number = B2Vec2.DotVV(this.m_ax, B2Vec2.SubVV(vB, vA, B2Vec2.s_t0)) + this.m_sBx * wB - this.m_sAx * wA;
       const impulse: number = -this.m_springMass * (Cdot + this.m_bias + this.m_gamma * this.m_springImpulse);
       this.m_springImpulse += impulse;
 
-      // b2Vec2 P = impulse * m_ax;
-      const P: b2Vec2 = b2Vec2.MulSV(impulse, this.m_ax, b2WheelJoint.SolveVelocityConstraints_s_P);
+      // B2Vec2 P = impulse * m_ax;
+      const P: B2Vec2 = B2Vec2.MulSV(impulse, this.m_ax, B2WheelJoint.SolveVelocityConstraints_s_P);
       const LA: number = impulse * this.m_sAx;
       const LB: number = impulse * this.m_sBx;
 
@@ -391,7 +391,7 @@ export class b2WheelJoint extends b2Joint {
 
       const oldImpulse: number = this.m_motorImpulse;
       const maxImpulse: number = data.step.dt * this.m_maxMotorTorque;
-      this.m_motorImpulse = b2Clamp(this.m_motorImpulse + impulse, -maxImpulse, maxImpulse);
+      this.m_motorImpulse = B2Clamp(this.m_motorImpulse + impulse, -maxImpulse, maxImpulse);
       impulse = this.m_motorImpulse - oldImpulse;
 
       wA -= iA * impulse;
@@ -402,14 +402,14 @@ export class b2WheelJoint extends b2Joint {
       // Lower limit
       {
         const C: number = this.m_translation - this.m_lowerTranslation;
-        const Cdot: number = b2Vec2.DotVV(this.m_ax, b2Vec2.SubVV(vB, vA, b2Vec2.s_t0)) + this.m_sBx * wB - this.m_sAx * wA;
-        let impulse: number = -this.m_axialMass * (Cdot + b2Max(C, 0.0) * data.step.inv_dt);
+        const Cdot: number = B2Vec2.DotVV(this.m_ax, B2Vec2.SubVV(vB, vA, B2Vec2.s_t0)) + this.m_sBx * wB - this.m_sAx * wA;
+        let impulse: number = -this.m_axialMass * (Cdot + B2Max(C, 0.0) * data.step.inv_dt);
         const oldImpulse: number = this.m_lowerImpulse;
-        this.m_lowerImpulse = b2Max(this.m_lowerImpulse + impulse, 0.0);
+        this.m_lowerImpulse = B2Max(this.m_lowerImpulse + impulse, 0.0);
         impulse = this.m_lowerImpulse - oldImpulse;
 
-        // b2Vec2 P = impulse * this.m_ax;
-        const P: b2Vec2 = b2Vec2.MulSV(impulse, this.m_ax, b2WheelJoint.SolveVelocityConstraints_s_P);
+        // B2Vec2 P = impulse * this.m_ax;
+        const P: B2Vec2 = B2Vec2.MulSV(impulse, this.m_ax, B2WheelJoint.SolveVelocityConstraints_s_P);
         const LA: number = impulse * this.m_sAx;
         const LB: number = impulse * this.m_sBx;
 
@@ -426,14 +426,14 @@ export class b2WheelJoint extends b2Joint {
       // This also keeps the impulse positive when the limit is active.
       {
         const C: number = this.m_upperTranslation - this.m_translation;
-        const Cdot: number = b2Vec2.DotVV(this.m_ax, b2Vec2.SubVV(vA, vB, b2Vec2.s_t0)) + this.m_sAx * wA - this.m_sBx * wB;
-        let impulse: number = -this.m_axialMass * (Cdot + b2Max(C, 0.0) * data.step.inv_dt);
+        const Cdot: number = B2Vec2.DotVV(this.m_ax, B2Vec2.SubVV(vA, vB, B2Vec2.s_t0)) + this.m_sAx * wA - this.m_sBx * wB;
+        let impulse: number = -this.m_axialMass * (Cdot + B2Max(C, 0.0) * data.step.inv_dt);
         const oldImpulse: number = this.m_upperImpulse;
-        this.m_upperImpulse = b2Max(this.m_upperImpulse + impulse, 0.0);
+        this.m_upperImpulse = B2Max(this.m_upperImpulse + impulse, 0.0);
         impulse = this.m_upperImpulse - oldImpulse;
 
-        // b2Vec2 P = impulse * this.m_ax;
-        const P: b2Vec2 = b2Vec2.MulSV(impulse, this.m_ax, b2WheelJoint.SolveVelocityConstraints_s_P);
+        // B2Vec2 P = impulse * this.m_ax;
+        const P: B2Vec2 = B2Vec2.MulSV(impulse, this.m_ax, B2WheelJoint.SolveVelocityConstraints_s_P);
         const LA: number = impulse * this.m_sAx;
         const LB: number = impulse * this.m_sBx;
 
@@ -448,12 +448,12 @@ export class b2WheelJoint extends b2Joint {
 
     // Solve point to line constraint
     {
-      const Cdot: number = b2Vec2.DotVV(this.m_ay, b2Vec2.SubVV(vB, vA, b2Vec2.s_t0)) + this.m_sBy * wB - this.m_sAy * wA;
+      const Cdot: number = B2Vec2.DotVV(this.m_ay, B2Vec2.SubVV(vB, vA, B2Vec2.s_t0)) + this.m_sBy * wB - this.m_sAy * wA;
       const impulse: number = -this.m_mass * Cdot;
       this.m_impulse += impulse;
 
-      // b2Vec2 P = impulse * m_ay;
-      const P: b2Vec2 = b2Vec2.MulSV(impulse, this.m_ay, b2WheelJoint.SolveVelocityConstraints_s_P);
+      // B2Vec2 P = impulse * m_ay;
+      const P: B2Vec2 = B2Vec2.MulSV(impulse, this.m_ay, B2WheelJoint.SolveVelocityConstraints_s_P);
       const LA: number = impulse * this.m_sAy;
       const LB: number = impulse * this.m_sBy;
 
@@ -472,38 +472,38 @@ export class b2WheelJoint extends b2Joint {
     data.velocities[this.m_indexB].w = wB;
   }
 
-  private static SolvePositionConstraints_s_d = new b2Vec2();
-  private static SolvePositionConstraints_s_P = new b2Vec2();
-  public SolvePositionConstraints(data: b2SolverData): boolean {
-    const cA: b2Vec2 = data.positions[this.m_indexA].c;
+  private static SolvePositionConstraints_s_d = new B2Vec2();
+  private static SolvePositionConstraints_s_P = new B2Vec2();
+  public SolvePositionConstraints(data: B2SolverData): boolean {
+    const cA: B2Vec2 = data.positions[this.m_indexA].c;
     let aA: number = data.positions[this.m_indexA].a;
-    const cB: b2Vec2 = data.positions[this.m_indexB].c;
+    const cB: B2Vec2 = data.positions[this.m_indexB].c;
     let aB: number = data.positions[this.m_indexB].a;
 
-    // const qA: b2Rot = this.m_qA.SetAngle(aA), qB: b2Rot = this.m_qB.SetAngle(aB);
+    // const qA: B2Rot = this.m_qA.SetAngle(aA), qB: B2Rot = this.m_qB.SetAngle(aB);
 
-    // // b2Vec2 rA = b2Mul(qA, m_localAnchorA - m_localCenterA);
-    // b2Vec2.SubVV(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
-    // const rA: b2Vec2 = b2Rot.MulRV(qA, this.m_lalcA, this.m_rA);
-    // // b2Vec2 rB = b2Mul(qB, m_localAnchorB - m_localCenterB);
-    // b2Vec2.SubVV(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
-    // const rB: b2Vec2 = b2Rot.MulRV(qB, this.m_lalcB, this.m_rB);
-    // // b2Vec2 d = (cB - cA) + rB - rA;
-    // const d: b2Vec2 = b2Vec2.AddVV(
-    //   b2Vec2.SubVV(cB, cA, b2Vec2.s_t0),
-    //   b2Vec2.SubVV(rB, rA, b2Vec2.s_t1),
-    //   b2WheelJoint.SolvePositionConstraints_s_d);
+    // // B2Vec2 rA = B2Mul(qA, m_localAnchorA - m_localCenterA);
+    // B2Vec2.SubVV(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
+    // const rA: B2Vec2 = B2Rot.MulRV(qA, this.m_lalcA, this.m_rA);
+    // // B2Vec2 rB = B2Mul(qB, m_localAnchorB - m_localCenterB);
+    // B2Vec2.SubVV(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
+    // const rB: B2Vec2 = B2Rot.MulRV(qB, this.m_lalcB, this.m_rB);
+    // // B2Vec2 d = (cB - cA) + rB - rA;
+    // const d: B2Vec2 = B2Vec2.AddVV(
+    //   B2Vec2.SubVV(cB, cA, B2Vec2.s_t0),
+    //   B2Vec2.SubVV(rB, rA, B2Vec2.s_t1),
+    //   B2WheelJoint.SolvePositionConstraints_s_d);
 
-    // // b2Vec2 ay = b2Mul(qA, m_localYAxisA);
-    // const ay: b2Vec2 = b2Rot.MulRV(qA, this.m_localYAxisA, this.m_ay);
+    // // B2Vec2 ay = B2Mul(qA, m_localYAxisA);
+    // const ay: B2Vec2 = B2Rot.MulRV(qA, this.m_localYAxisA, this.m_ay);
 
-    // // float32 sAy = b2Cross(d + rA, ay);
-    // const sAy = b2Vec2.CrossVV(b2Vec2.AddVV(d, rA, b2Vec2.s_t0), ay);
-    // // float32 sBy = b2Cross(rB, ay);
-    // const sBy = b2Vec2.CrossVV(rB, ay);
+    // // float32 sAy = B2Cross(d + rA, ay);
+    // const sAy = B2Vec2.CrossVV(B2Vec2.AddVV(d, rA, B2Vec2.s_t0), ay);
+    // // float32 sBy = B2Cross(rB, ay);
+    // const sBy = B2Vec2.CrossVV(rB, ay);
 
-    // // float32 C = b2Dot(d, ay);
-    // const C: number = b2Vec2.DotVV(d, this.m_ay);
+    // // float32 C = B2Dot(d, ay);
+    // const C: number = B2Vec2.DotVV(d, this.m_ay);
 
     // const k: number = this.m_invMassA + this.m_invMassB + this.m_invIA * this.m_sAy * this.m_sAy + this.m_invIB * this.m_sBy * this.m_sBy;
 
@@ -514,8 +514,8 @@ export class b2WheelJoint extends b2Joint {
     //   impulse = 0;
     // }
 
-    // // b2Vec2 P = impulse * ay;
-    // const P: b2Vec2 = b2Vec2.MulSV(impulse, ay, b2WheelJoint.SolvePositionConstraints_s_P);
+    // // B2Vec2 P = impulse * ay;
+    // const P: B2Vec2 = B2Vec2.MulSV(impulse, ay, B2WheelJoint.SolvePositionConstraints_s_P);
     // const LA: number = impulse * sAy;
     // const LB: number = impulse * sBy;
 
@@ -529,40 +529,40 @@ export class b2WheelJoint extends b2Joint {
     let linearError: number = 0.0;
 
     if (this.m_enableLimit) {
-      // b2Rot qA(aA), qB(aB);
-      const qA: b2Rot = this.m_qA.SetAngle(aA), qB: b2Rot = this.m_qB.SetAngle(aB);
+      // B2Rot qA(aA), qB(aB);
+      const qA: B2Rot = this.m_qA.SetAngle(aA), qB: B2Rot = this.m_qB.SetAngle(aB);
 
-      // b2Vec2 rA = b2Mul(qA, this.m_localAnchorA - this.m_localCenterA);
-      // b2Vec2 rB = b2Mul(qB, this.m_localAnchorB - this.m_localCenterB);
-      // b2Vec2 d = (cB - cA) + rB - rA;
+      // B2Vec2 rA = B2Mul(qA, this.m_localAnchorA - this.m_localCenterA);
+      // B2Vec2 rB = B2Mul(qB, this.m_localAnchorB - this.m_localCenterB);
+      // B2Vec2 d = (cB - cA) + rB - rA;
 
-      // b2Vec2 rA = b2Mul(qA, m_localAnchorA - m_localCenterA);
-      b2Vec2.SubVV(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
-      const rA: b2Vec2 = b2Rot.MulRV(qA, this.m_lalcA, this.m_rA);
-      // b2Vec2 rB = b2Mul(qB, m_localAnchorB - m_localCenterB);
-      b2Vec2.SubVV(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
-      const rB: b2Vec2 = b2Rot.MulRV(qB, this.m_lalcB, this.m_rB);
-      // b2Vec2 d = (cB - cA) + rB - rA;
-      const d: b2Vec2 = b2Vec2.AddVV(
-        b2Vec2.SubVV(cB, cA, b2Vec2.s_t0),
-        b2Vec2.SubVV(rB, rA, b2Vec2.s_t1),
-        b2WheelJoint.SolvePositionConstraints_s_d);
+      // B2Vec2 rA = B2Mul(qA, m_localAnchorA - m_localCenterA);
+      B2Vec2.SubVV(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
+      const rA: B2Vec2 = B2Rot.MulRV(qA, this.m_lalcA, this.m_rA);
+      // B2Vec2 rB = B2Mul(qB, m_localAnchorB - m_localCenterB);
+      B2Vec2.SubVV(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
+      const rB: B2Vec2 = B2Rot.MulRV(qB, this.m_lalcB, this.m_rB);
+      // B2Vec2 d = (cB - cA) + rB - rA;
+      const d: B2Vec2 = B2Vec2.AddVV(
+        B2Vec2.SubVV(cB, cA, B2Vec2.s_t0),
+        B2Vec2.SubVV(rB, rA, B2Vec2.s_t1),
+        B2WheelJoint.SolvePositionConstraints_s_d);
 
-      // b2Vec2 ax = b2Mul(qA, this.m_localXAxisA);
-      const ax: b2Vec2 = b2Rot.MulRV(qA, this.m_localXAxisA, this.m_ax);
-      // float sAx = b2Cross(d + rA, this.m_ax);
-      const sAx = b2Vec2.CrossVV(b2Vec2.AddVV(d, rA, b2Vec2.s_t0), this.m_ax);
-      // float sBx = b2Cross(rB, this.m_ax);
-      const sBx = b2Vec2.CrossVV(rB, this.m_ax);
+      // B2Vec2 ax = B2Mul(qA, this.m_localXAxisA);
+      const ax: B2Vec2 = B2Rot.MulRV(qA, this.m_localXAxisA, this.m_ax);
+      // float sAx = B2Cross(d + rA, this.m_ax);
+      const sAx = B2Vec2.CrossVV(B2Vec2.AddVV(d, rA, B2Vec2.s_t0), this.m_ax);
+      // float sBx = B2Cross(rB, this.m_ax);
+      const sBx = B2Vec2.CrossVV(rB, this.m_ax);
 
       let C: number = 0.0;
-      const translation: number = b2Vec2.DotVV(ax, d);
-      if (b2Abs(this.m_upperTranslation - this.m_lowerTranslation) < 2.0 * b2_linearSlop) {
+      const translation: number = B2Vec2.DotVV(ax, d);
+      if (B2Abs(this.m_upperTranslation - this.m_lowerTranslation) < 2.0 * B2_linearSlop) {
         C = translation;
       } else if (translation <= this.m_lowerTranslation) {
-        C = b2Min(translation - this.m_lowerTranslation, 0.0);
+        C = B2Min(translation - this.m_lowerTranslation, 0.0);
       } else if (translation >= this.m_upperTranslation) {
-        C = b2Max(translation - this.m_upperTranslation, 0.0);
+        C = B2Max(translation - this.m_upperTranslation, 0.0);
       }
 
       if (C !== 0.0) {
@@ -573,7 +573,7 @@ export class b2WheelJoint extends b2Joint {
           impulse = -C / invMass;
         }
 
-        const P: b2Vec2 = b2Vec2.MulSV(impulse, ax, b2WheelJoint.SolvePositionConstraints_s_P);
+        const P: B2Vec2 = B2Vec2.MulSV(impulse, ax, B2WheelJoint.SolvePositionConstraints_s_P);
         const LA: number = impulse * sAx;
         const LB: number = impulse * sBx;
 
@@ -585,41 +585,41 @@ export class b2WheelJoint extends b2Joint {
         // aB += m_invIB * LB;
         aB += this.m_invIB * LB;
 
-        linearError = b2Abs(C);
+        linearError = B2Abs(C);
       }
     }
 
     // Solve perpendicular constraint
     {
-      // b2Rot qA(aA), qB(aB);
-      const qA: b2Rot = this.m_qA.SetAngle(aA), qB: b2Rot = this.m_qB.SetAngle(aB);
+      // B2Rot qA(aA), qB(aB);
+      const qA: B2Rot = this.m_qA.SetAngle(aA), qB: B2Rot = this.m_qB.SetAngle(aB);
 
-      // b2Vec2 rA = b2Mul(qA, m_localAnchorA - m_localCenterA);
-      // b2Vec2 rB = b2Mul(qB, m_localAnchorB - m_localCenterB);
-      // b2Vec2 d = (cB - cA) + rB - rA;
+      // B2Vec2 rA = B2Mul(qA, m_localAnchorA - m_localCenterA);
+      // B2Vec2 rB = B2Mul(qB, m_localAnchorB - m_localCenterB);
+      // B2Vec2 d = (cB - cA) + rB - rA;
 
-      // b2Vec2 rA = b2Mul(qA, m_localAnchorA - m_localCenterA);
-      b2Vec2.SubVV(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
-      const rA: b2Vec2 = b2Rot.MulRV(qA, this.m_lalcA, this.m_rA);
-      // b2Vec2 rB = b2Mul(qB, m_localAnchorB - m_localCenterB);
-      b2Vec2.SubVV(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
-      const rB: b2Vec2 = b2Rot.MulRV(qB, this.m_lalcB, this.m_rB);
-      // b2Vec2 d = (cB - cA) + rB - rA;
-      const d: b2Vec2 = b2Vec2.AddVV(
-        b2Vec2.SubVV(cB, cA, b2Vec2.s_t0),
-        b2Vec2.SubVV(rB, rA, b2Vec2.s_t1),
-        b2WheelJoint.SolvePositionConstraints_s_d);
+      // B2Vec2 rA = B2Mul(qA, m_localAnchorA - m_localCenterA);
+      B2Vec2.SubVV(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
+      const rA: B2Vec2 = B2Rot.MulRV(qA, this.m_lalcA, this.m_rA);
+      // B2Vec2 rB = B2Mul(qB, m_localAnchorB - m_localCenterB);
+      B2Vec2.SubVV(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
+      const rB: B2Vec2 = B2Rot.MulRV(qB, this.m_lalcB, this.m_rB);
+      // B2Vec2 d = (cB - cA) + rB - rA;
+      const d: B2Vec2 = B2Vec2.AddVV(
+        B2Vec2.SubVV(cB, cA, B2Vec2.s_t0),
+        B2Vec2.SubVV(rB, rA, B2Vec2.s_t1),
+        B2WheelJoint.SolvePositionConstraints_s_d);
 
-      // b2Vec2 ay = b2Mul(qA, m_localYAxisA);
-      const ay: b2Vec2 = b2Rot.MulRV(qA, this.m_localYAxisA, this.m_ay);
+      // B2Vec2 ay = B2Mul(qA, m_localYAxisA);
+      const ay: B2Vec2 = B2Rot.MulRV(qA, this.m_localYAxisA, this.m_ay);
 
-      // float sAy = b2Cross(d + rA, ay);
-      const sAy = b2Vec2.CrossVV(b2Vec2.AddVV(d, rA, b2Vec2.s_t0), ay);
-      // float sBy = b2Cross(rB, ay);
-      const sBy = b2Vec2.CrossVV(rB, ay);
+      // float sAy = B2Cross(d + rA, ay);
+      const sAy = B2Vec2.CrossVV(B2Vec2.AddVV(d, rA, B2Vec2.s_t0), ay);
+      // float sBy = B2Cross(rB, ay);
+      const sBy = B2Vec2.CrossVV(rB, ay);
 
-      // float C = b2Dot(d, ay);
-      const C: number = b2Vec2.DotVV(d, ay);
+      // float C = B2Dot(d, ay);
+      const C: number = B2Vec2.DotVV(d, ay);
 
       const invMass: number = this.m_invMassA + this.m_invMassB + this.m_invIA * this.m_sAy * this.m_sAy + this.m_invIB * this.m_sBy * this.m_sBy;
 
@@ -628,10 +628,10 @@ export class b2WheelJoint extends b2Joint {
         impulse = - C / invMass;
       }
 
-      // b2Vec2 P = impulse * ay;
+      // B2Vec2 P = impulse * ay;
       // const LA: number = impulse * sAy;
       // const LB: number = impulse * sBy;
-      const P: b2Vec2 = b2Vec2.MulSV(impulse, ay, b2WheelJoint.SolvePositionConstraints_s_P);
+      const P: B2Vec2 = B2Vec2.MulSV(impulse, ay, B2WheelJoint.SolvePositionConstraints_s_P);
       const LA: number = impulse * sAy;
       const LB: number = impulse * sBy;
 
@@ -642,7 +642,7 @@ export class b2WheelJoint extends b2Joint {
       cB.SelfMulAdd(this.m_invMassB, P);
       aB += this.m_invIB * LB;
 
-      linearError = b2Max(linearError, b2Abs(C));
+      linearError = B2Max(linearError, B2Abs(C));
     }
 
     // data.positions[this.m_indexA].c = cA;
@@ -650,11 +650,11 @@ export class b2WheelJoint extends b2Joint {
     // data.positions[this.m_indexB].c = cB;
     data.positions[this.m_indexB].a = aB;
 
-    return linearError <= b2_linearSlop;
+    return linearError <= B2_linearSlop;
   }
 
-  public GetDefinition(def: b2WheelJointDef): b2WheelJointDef {
-    // DEBUG: b2Assert(false); // TODO
+  public GetDefinition(def: B2WheelJointDef): B2WheelJointDef {
+    // DEBUG: B2Assert(false); // TODO
     return def;
   }
 
@@ -676,11 +676,11 @@ export class b2WheelJoint extends b2Joint {
     return inv_dt * this.m_motorImpulse;
   }
 
-  public GetLocalAnchorA(): Readonly<b2Vec2> { return this.m_localAnchorA; }
+  public GetLocalAnchorA(): Readonly<B2Vec2> { return this.m_localAnchorA; }
 
-  public GetLocalAnchorB(): Readonly<b2Vec2> { return this.m_localAnchorB; }
+  public GetLocalAnchorB(): Readonly<B2Vec2> { return this.m_localAnchorB; }
 
-  public GetLocalAxisA(): Readonly<b2Vec2> { return this.m_localXAxisA; }
+  public GetLocalAxisA(): Readonly<B2Vec2> { return this.m_localXAxisA; }
 
   public GetJointTranslation(): number {
     return this.GetPrismaticJointTranslation();
@@ -699,57 +699,57 @@ export class b2WheelJoint extends b2Joint {
   }
 
   public GetPrismaticJointTranslation(): number {
-    const bA: b2Body = this.m_bodyA;
-    const bB: b2Body = this.m_bodyB;
+    const bA: B2Body = this.m_bodyA;
+    const bB: B2Body = this.m_bodyB;
 
-    const pA: b2Vec2 = bA.GetWorldPoint(this.m_localAnchorA, new b2Vec2());
-    const pB: b2Vec2 = bB.GetWorldPoint(this.m_localAnchorB, new b2Vec2());
-    const d: b2Vec2 = b2Vec2.SubVV(pB, pA, new b2Vec2());
-    const axis: b2Vec2 = bA.GetWorldVector(this.m_localXAxisA, new b2Vec2());
+    const pA: B2Vec2 = bA.GetWorldPoint(this.m_localAnchorA, new B2Vec2());
+    const pB: B2Vec2 = bB.GetWorldPoint(this.m_localAnchorB, new B2Vec2());
+    const d: B2Vec2 = B2Vec2.SubVV(pB, pA, new B2Vec2());
+    const axis: B2Vec2 = bA.GetWorldVector(this.m_localXAxisA, new B2Vec2());
 
-    const translation: number = b2Vec2.DotVV(d, axis);
+    const translation: number = B2Vec2.DotVV(d, axis);
     return translation;
   }
 
   public GetPrismaticJointSpeed(): number {
-    const bA: b2Body = this.m_bodyA;
-    const bB: b2Body = this.m_bodyB;
+    const bA: B2Body = this.m_bodyA;
+    const bB: B2Body = this.m_bodyB;
 
-    // b2Vec2 rA = b2Mul(bA.m_xf.q, m_localAnchorA - bA.m_sweep.localCenter);
-    b2Vec2.SubVV(this.m_localAnchorA, bA.m_sweep.localCenter, this.m_lalcA);
-    const rA = b2Rot.MulRV(bA.m_xf.q, this.m_lalcA, this.m_rA);
-    // b2Vec2 rB = b2Mul(bB.m_xf.q, m_localAnchorB - bB.m_sweep.localCenter);
-    b2Vec2.SubVV(this.m_localAnchorB, bB.m_sweep.localCenter, this.m_lalcB);
-    const rB = b2Rot.MulRV(bB.m_xf.q, this.m_lalcB, this.m_rB);
-    // b2Vec2 pA = bA.m_sweep.c + rA;
-    const pA = b2Vec2.AddVV(bA.m_sweep.c, rA, b2Vec2.s_t0); // pA uses s_t0
-    // b2Vec2 pB = bB.m_sweep.c + rB;
-    const pB = b2Vec2.AddVV(bB.m_sweep.c, rB, b2Vec2.s_t1); // pB uses s_t1
-    // b2Vec2 d = pB - pA;
-    const d = b2Vec2.SubVV(pB, pA, b2Vec2.s_t2); // d uses s_t2
-    // b2Vec2 axis = b2Mul(bA.m_xf.q, m_localXAxisA);
-    const axis = bA.GetWorldVector(this.m_localXAxisA, new b2Vec2());
+    // B2Vec2 rA = B2Mul(bA.m_xf.q, m_localAnchorA - bA.m_sweep.localCenter);
+    B2Vec2.SubVV(this.m_localAnchorA, bA.m_sweep.localCenter, this.m_lalcA);
+    const rA = B2Rot.MulRV(bA.m_xf.q, this.m_lalcA, this.m_rA);
+    // B2Vec2 rB = B2Mul(bB.m_xf.q, m_localAnchorB - bB.m_sweep.localCenter);
+    B2Vec2.SubVV(this.m_localAnchorB, bB.m_sweep.localCenter, this.m_lalcB);
+    const rB = B2Rot.MulRV(bB.m_xf.q, this.m_lalcB, this.m_rB);
+    // B2Vec2 pA = bA.m_sweep.c + rA;
+    const pA = B2Vec2.AddVV(bA.m_sweep.c, rA, B2Vec2.s_t0); // pA uses s_t0
+    // B2Vec2 pB = bB.m_sweep.c + rB;
+    const pB = B2Vec2.AddVV(bB.m_sweep.c, rB, B2Vec2.s_t1); // pB uses s_t1
+    // B2Vec2 d = pB - pA;
+    const d = B2Vec2.SubVV(pB, pA, B2Vec2.s_t2); // d uses s_t2
+    // B2Vec2 axis = B2Mul(bA.m_xf.q, m_localXAxisA);
+    const axis = bA.GetWorldVector(this.m_localXAxisA, new B2Vec2());
 
     const vA = bA.m_linearVelocity;
     const vB = bB.m_linearVelocity;
     const wA = bA.m_angularVelocity;
     const wB = bB.m_angularVelocity;
 
-    // float32 speed = b2Dot(d, b2Cross(wA, axis)) + b2Dot(axis, vB + b2Cross(wB, rB) - vA - b2Cross(wA, rA));
+    // float32 speed = B2Dot(d, B2Cross(wA, axis)) + B2Dot(axis, vB + B2Cross(wB, rB) - vA - B2Cross(wA, rA));
     const speed =
-      b2Vec2.DotVV(d, b2Vec2.CrossSV(wA, axis, b2Vec2.s_t0)) +
-      b2Vec2.DotVV(
+      B2Vec2.DotVV(d, B2Vec2.CrossSV(wA, axis, B2Vec2.s_t0)) +
+      B2Vec2.DotVV(
         axis,
-        b2Vec2.SubVV(
-          b2Vec2.AddVCrossSV(vB, wB, rB, b2Vec2.s_t0),
-          b2Vec2.AddVCrossSV(vA, wA, rA, b2Vec2.s_t1),
-          b2Vec2.s_t0));
+        B2Vec2.SubVV(
+          B2Vec2.AddVCrossSV(vB, wB, rB, B2Vec2.s_t0),
+          B2Vec2.AddVCrossSV(vA, wA, rA, B2Vec2.s_t1),
+          B2Vec2.s_t0));
     return speed;
   }
 
   public GetRevoluteJointAngle(): number {
-    // b2Body* bA = this.m_bodyA;
-    // b2Body* bB = this.m_bodyB;
+    // B2Body* bA = this.m_bodyA;
+    // B2Body* bB = this.m_bodyB;
     // return bB.this.m_sweep.a - bA.this.m_sweep.a;
     return this.m_bodyB.m_sweep.a - this.m_bodyA.m_sweep.a;
   }
@@ -820,7 +820,7 @@ export class b2WheelJoint extends b2Joint {
 
   /// Set the joint translation limits, usually in meters.
   public SetLimits(lower: number, upper: number): void {
-    // b2Assert(lower <= upper);
+    // B2Assert(lower <= upper);
     if (lower !== this.m_lowerTranslation || upper !== this.m_upperTranslation) {
       this.m_bodyA.SetAwake(true);
       this.m_bodyB.SetAwake(true);
@@ -835,7 +835,7 @@ export class b2WheelJoint extends b2Joint {
     const indexA = this.m_bodyA.m_islandIndex;
     const indexB = this.m_bodyB.m_islandIndex;
 
-    log("  const jd: b2WheelJointDef = new b2WheelJointDef();\n");
+    log("  const jd: B2WheelJointDef = new B2WheelJointDef();\n");
     log("  jd.bodyA = bodies[%d];\n", indexA);
     log("  jd.bodyB = bodies[%d];\n", indexB);
     log("  jd.collideConnected = %s;\n", (this.m_collideConnected) ? ("true") : ("false"));
@@ -851,50 +851,50 @@ export class b2WheelJoint extends b2Joint {
   }
 
   ///
-  private static Draw_s_pA = new b2Vec2();
-  private static Draw_s_pB = new b2Vec2();
-  private static Draw_s_axis = new b2Vec2();
-  private static Draw_s_c1 = new b2Color(0.7, 0.7, 0.7);
-  private static Draw_s_c2 = new b2Color(0.3, 0.9, 0.3);
-  private static Draw_s_c3 = new b2Color(0.9, 0.3, 0.3);
-  private static Draw_s_c4 = new b2Color(0.3, 0.3, 0.9);
-  private static Draw_s_c5 = new b2Color(0.4, 0.4, 0.4);
-  private static Draw_s_lower = new b2Vec2();
-  private static Draw_s_upper = new b2Vec2();
-  private static Draw_s_perp = new b2Vec2();
-  public override Draw(draw: b2Draw): void {
-    const xfA: Readonly<b2Transform> = this.m_bodyA.GetTransform();
-    const xfB: Readonly<b2Transform> = this.m_bodyB.GetTransform();
-    const pA = b2Transform.MulXV(xfA, this.m_localAnchorA, b2WheelJoint.Draw_s_pA);
-    const pB = b2Transform.MulXV(xfB, this.m_localAnchorB, b2WheelJoint.Draw_s_pB);
+  private static Draw_s_pA = new B2Vec2();
+  private static Draw_s_pB = new B2Vec2();
+  private static Draw_s_axis = new B2Vec2();
+  private static Draw_s_c1 = new B2Color(0.7, 0.7, 0.7);
+  private static Draw_s_c2 = new B2Color(0.3, 0.9, 0.3);
+  private static Draw_s_c3 = new B2Color(0.9, 0.3, 0.3);
+  private static Draw_s_c4 = new B2Color(0.3, 0.3, 0.9);
+  private static Draw_s_c5 = new B2Color(0.4, 0.4, 0.4);
+  private static Draw_s_lower = new B2Vec2();
+  private static Draw_s_upper = new B2Vec2();
+  private static Draw_s_perp = new B2Vec2();
+  public override Draw(draw: B2Draw): void {
+    const xfA: Readonly<B2Transform> = this.m_bodyA.GetTransform();
+    const xfB: Readonly<B2Transform> = this.m_bodyB.GetTransform();
+    const pA = B2Transform.MulXV(xfA, this.m_localAnchorA, B2WheelJoint.Draw_s_pA);
+    const pB = B2Transform.MulXV(xfB, this.m_localAnchorB, B2WheelJoint.Draw_s_pB);
 
-    // b2Vec2 axis = b2Mul(xfA.q, m_localXAxisA);
-    const axis: b2Vec2 = b2Rot.MulRV(xfA.q, this.m_localXAxisA, b2WheelJoint.Draw_s_axis);
+    // B2Vec2 axis = B2Mul(xfA.q, m_localXAxisA);
+    const axis: B2Vec2 = B2Rot.MulRV(xfA.q, this.m_localXAxisA, B2WheelJoint.Draw_s_axis);
 
-    const c1 = b2WheelJoint.Draw_s_c1; // b2Color c1(0.7f, 0.7f, 0.7f);
-    const c2 = b2WheelJoint.Draw_s_c2; // b2Color c2(0.3f, 0.9f, 0.3f);
-    const c3 = b2WheelJoint.Draw_s_c3; // b2Color c3(0.9f, 0.3f, 0.3f);
-    const c4 = b2WheelJoint.Draw_s_c4; // b2Color c4(0.3f, 0.3f, 0.9f);
-    const c5 = b2WheelJoint.Draw_s_c5; // b2Color c5(0.4f, 0.4f, 0.4f);
+    const c1 = B2WheelJoint.Draw_s_c1; // B2Color c1(0.7f, 0.7f, 0.7f);
+    const c2 = B2WheelJoint.Draw_s_c2; // B2Color c2(0.3f, 0.9f, 0.3f);
+    const c3 = B2WheelJoint.Draw_s_c3; // B2Color c3(0.9f, 0.3f, 0.3f);
+    const c4 = B2WheelJoint.Draw_s_c4; // B2Color c4(0.3f, 0.3f, 0.9f);
+    const c5 = B2WheelJoint.Draw_s_c5; // B2Color c5(0.4f, 0.4f, 0.4f);
 
     draw.DrawSegment(pA, pB, c5);
 
     if (this.m_enableLimit) {
-      // b2Vec2 lower = pA + m_lowerTranslation * axis;
-      const lower = b2Vec2.AddVMulSV(pA, this.m_lowerTranslation, axis, b2WheelJoint.Draw_s_lower);
-      // b2Vec2 upper = pA + m_upperTranslation * axis;
-      const upper = b2Vec2.AddVMulSV(pA, this.m_upperTranslation, axis, b2WheelJoint.Draw_s_upper);
-      // b2Vec2 perp = b2Mul(xfA.q, m_localYAxisA);
-      const perp = b2Rot.MulRV(xfA.q, this.m_localYAxisA, b2WheelJoint.Draw_s_perp);
+      // B2Vec2 lower = pA + m_lowerTranslation * axis;
+      const lower = B2Vec2.AddVMulSV(pA, this.m_lowerTranslation, axis, B2WheelJoint.Draw_s_lower);
+      // B2Vec2 upper = pA + m_upperTranslation * axis;
+      const upper = B2Vec2.AddVMulSV(pA, this.m_upperTranslation, axis, B2WheelJoint.Draw_s_upper);
+      // B2Vec2 perp = B2Mul(xfA.q, m_localYAxisA);
+      const perp = B2Rot.MulRV(xfA.q, this.m_localYAxisA, B2WheelJoint.Draw_s_perp);
       // draw.DrawSegment(lower, upper, c1);
       draw.DrawSegment(lower, upper, c1);
       // draw.DrawSegment(lower - 0.5f * perp, lower + 0.5f * perp, c2);
-      draw.DrawSegment(b2Vec2.AddVMulSV(lower, -0.5, perp, b2Vec2.s_t0), b2Vec2.AddVMulSV(lower, 0.5, perp, b2Vec2.s_t1), c2);
+      draw.DrawSegment(B2Vec2.AddVMulSV(lower, -0.5, perp, B2Vec2.s_t0), B2Vec2.AddVMulSV(lower, 0.5, perp, B2Vec2.s_t1), c2);
       // draw.DrawSegment(upper - 0.5f * perp, upper + 0.5f * perp, c3);
-      draw.DrawSegment(b2Vec2.AddVMulSV(upper, -0.5, perp, b2Vec2.s_t0), b2Vec2.AddVMulSV(upper, 0.5, perp, b2Vec2.s_t1), c3);
+      draw.DrawSegment(B2Vec2.AddVMulSV(upper, -0.5, perp, B2Vec2.s_t0), B2Vec2.AddVMulSV(upper, 0.5, perp, B2Vec2.s_t1), c3);
     } else {
       // draw.DrawSegment(pA - 1.0f * axis, pA + 1.0f * axis, c1);
-      draw.DrawSegment(b2Vec2.AddVMulSV(pA, -1.0, axis, b2Vec2.s_t0), b2Vec2.AddVMulSV(pA, 1.0, axis, b2Vec2.s_t1), c1);
+      draw.DrawSegment(B2Vec2.AddVMulSV(pA, -1.0, axis, B2Vec2.s_t0), B2Vec2.AddVMulSV(pA, 1.0, axis, B2Vec2.s_t1), c1);
     }
 
     draw.DrawPoint(pA, 5.0, c1);

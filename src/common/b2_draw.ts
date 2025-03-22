@@ -16,7 +16,7 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-import { b2Transform, XY } from "./b2_math.js";
+import { B2Transform, XY } from "./b2_math.js";
 
 export interface RGB {
   r: number;
@@ -29,17 +29,17 @@ export interface RGBA extends RGB {
 }
 
 /// Color for debug drawing. Each value has the range [0,1].
-export class b2Color implements RGBA {
-  public static readonly ZERO: Readonly<b2Color> = new b2Color(0, 0, 0, 0);
+export class B2Color implements RGBA {
+  public static readonly ZERO: Readonly<B2Color> = new B2Color(0, 0, 0, 0);
 
-  public static readonly RED: Readonly<b2Color> = new b2Color(1, 0, 0);
-  public static readonly GREEN: Readonly<b2Color> = new b2Color(0, 1, 0);
-  public static readonly BLUE: Readonly<b2Color> = new b2Color(0, 0, 1);
+  public static readonly RED: Readonly<B2Color> = new B2Color(1, 0, 0);
+  public static readonly GREEN: Readonly<B2Color> = new B2Color(0, 1, 0);
+  public static readonly BLUE: Readonly<B2Color> = new B2Color(0, 0, 1);
 
   constructor(public r: number = 0.5, public g: number = 0.5, public b: number = 0.5, public a: number = 1.0) {}
 
-  public Clone(): b2Color {
-    return new b2Color().Copy(this);
+  public Clone(): B2Color {
+    return new B2Color().Copy(this);
   }
 
   public Copy(other: RGBA): this {
@@ -141,7 +141,7 @@ export class b2Color implements RGBA {
   }
 
   public Mix(mixColor: RGBA, strength: number): void {
-    b2Color.MixColors(this, mixColor, strength);
+    B2Color.MixColors(this, mixColor, strength);
   }
 
   public static MixColors(colorA: RGBA, colorB: RGBA, strength: number): void {
@@ -160,7 +160,7 @@ export class b2Color implements RGBA {
   }
 
   public MakeStyleString(alpha: number = this.a): string {
-    return b2Color.MakeStyleString(this.r, this.g, this.b, alpha);
+    return B2Color.MakeStyleString(this.r, this.g, this.b, alpha);
   }
 
   public static MakeStyleString(r: number, g: number, b: number, a: number = 1.0): string {
@@ -177,7 +177,7 @@ export class b2Color implements RGBA {
   }
 }
 
-export class b2TypedColor implements b2Color {
+export class B2TypedColor implements B2Color {
   public readonly data: Float32Array;
   public get r(): number { return this.data[0]; } public set r(value: number) { this.data[0] = value; }
   public get g(): number { return this.data[1]; } public set g(value: number) { this.data[1] = value; }
@@ -201,12 +201,12 @@ export class b2TypedColor implements b2Color {
     }
   }
 
-  public Clone(): b2TypedColor {
-    return new b2TypedColor(new Float32Array(this.data));
+  public Clone(): B2TypedColor {
+    return new B2TypedColor(new Float32Array(this.data));
   }
 
   public Copy(other: RGBA): this {
-    if (other instanceof b2TypedColor) {
+    if (other instanceof B2TypedColor) {
       this.data.set(other.data);
     }
     else {
@@ -309,15 +309,15 @@ export class b2TypedColor implements b2Color {
   }
 
   public Mix(mixColor: RGBA, strength: number): void {
-    b2Color.MixColors(this, mixColor, strength);
+    B2Color.MixColors(this, mixColor, strength);
   }
 
   public MakeStyleString(alpha: number = this.a): string {
-    return b2Color.MakeStyleString(this.r, this.g, this.b, alpha);
+    return B2Color.MakeStyleString(this.r, this.g, this.b, alpha);
   }
 }
 
-export enum b2DrawFlags {
+export enum B2DrawFlags {
   e_none = 0,
   e_shapeBit = 0x0001, ///< draw shapes
   e_jointBit = 0x0002, ///< draw joint connections
@@ -328,35 +328,35 @@ export enum b2DrawFlags {
   e_particleBit = 0x0020, ///< draw particles
   // #endif
   // #if B2_ENABLE_CONTROLLER
-  e_controllerBit = 0x0040, /// @see b2Controller list
+  e_controllerBit = 0x0040, /// @see B2Controller list
   // #endif
   e_all = 0x003f,
 }
 
-/// Implement and register this class with a b2World to provide debug drawing of physics
+/// Implement and register this class with a B2World to provide debug drawing of physics
 /// entities in your game.
-export abstract class b2Draw {
-  public m_drawFlags: b2DrawFlags = 0;
+export abstract class B2Draw {
+  public m_drawFlags: B2DrawFlags = 0;
 
-  public SetFlags(flags: b2DrawFlags): void {
+  public SetFlags(flags: B2DrawFlags): void {
     this.m_drawFlags = flags;
   }
 
-  public GetFlags(): b2DrawFlags {
+  public GetFlags(): B2DrawFlags {
     return this.m_drawFlags;
   }
 
-  public AppendFlags(flags: b2DrawFlags): void {
+  public AppendFlags(flags: B2DrawFlags): void {
     this.m_drawFlags |= flags;
   }
 
-  public ClearFlags(flags: b2DrawFlags): void {
+  public ClearFlags(flags: B2DrawFlags): void {
     this.m_drawFlags &= ~flags;
   }
 
-  public abstract PushTransform(xf: b2Transform): void;
+  public abstract PushTransform(xf: B2Transform): void;
 
-  public abstract PopTransform(xf: b2Transform): void;
+  public abstract PopTransform(xf: B2Transform): void;
 
   public abstract DrawPolygon(vertices: XY[], vertexCount: number, color: RGBA): void;
 
@@ -372,7 +372,7 @@ export abstract class b2Draw {
 
   public abstract DrawSegment(p1: XY, p2: XY, color: RGBA): void;
 
-  public abstract DrawTransform(xf: b2Transform): void;
+  public abstract DrawTransform(xf: B2Transform): void;
 
   public abstract DrawPoint(p: XY, size: number, color: RGBA): void;
 }

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2016",
-    "module": "system",
+    "module": "commonjs",
     "strict": true,
     "noImplicitAny": true,
     "noImplicitOverride": true,
@@ -9,7 +9,7 @@
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "useUnknownInCatchVariables": true,
-    "outDir": "./build",
+    "outDir": "./lib",
     "declaration": true,
     "sourceMap": true,
   },

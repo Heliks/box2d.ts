@@ -16,41 +16,41 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-// DEBUG: import { b2Assert, b2_epsilon_sq } from "../common/b2_settings.js";
-import { b2_epsilon, b2_maxFloat, b2_linearSlop, b2_polygonRadius } from "../common/b2_settings.js";
-import { b2Vec2, b2Rot, b2Transform, XY } from "../common/b2_math.js";
-import { b2AABB, b2RayCastInput, b2RayCastOutput } from "./b2_collision.js";
-import { b2DistanceProxy } from "./b2_distance.js";
-import { b2MassData } from "./b2_shape.js";
-import { b2Shape, b2ShapeType } from "./b2_shape.js";
+// DEBUG: import { B2Assert, B2_epsilon_sq } from "../common/b2_settings.js";
+import { B2_epsilon, B2_maxFloat, B2_linearSlop, B2_polygonRadius } from "../common/b2_settings.js";
+import { B2Vec2, B2Rot, B2Transform, XY } from "../common/b2_math.js";
+import { B2AABB, B2RayCastInput, B2RayCastOutput } from "./b2_collision.js";
+import { B2DistanceProxy } from "./b2_distance.js";
+import { B2MassData } from "./b2_shape.js";
+import { B2Shape, B2ShapeType } from "./b2_shape.js";
 
 /// A solid convex polygon. It is assumed that the interior of the polygon is to
 /// the left of each edge.
 /// In most cases you should not need many vertices for a convex polygon.
-export class b2PolygonShape extends b2Shape {
-  public readonly m_centroid: b2Vec2 = new b2Vec2(0, 0);
-  public m_vertices: b2Vec2[] = [];
-  public m_normals: b2Vec2[] = [];
+export class B2PolygonShape extends B2Shape {
+  public readonly m_centroid: B2Vec2 = new B2Vec2(0, 0);
+  public m_vertices: B2Vec2[] = [];
+  public m_normals: B2Vec2[] = [];
   public m_count: number = 0;
 
   constructor() {
-    super(b2ShapeType.e_polygonShape, b2_polygonRadius);
+    super(B2ShapeType.e_polygonShape, B2_polygonRadius);
   }
 
-  /// Implement b2Shape.
-  public Clone(): b2PolygonShape {
-    return new b2PolygonShape().Copy(this);
+  /// Implement B2Shape.
+  public Clone(): B2PolygonShape {
+    return new B2PolygonShape().Copy(this);
   }
 
-  public override Copy(other: b2PolygonShape): this {
+  public override Copy(other: B2PolygonShape): this {
     super.Copy(other);
 
-    // DEBUG: b2Assert(other instanceof b2PolygonShape);
+    // DEBUG: B2Assert(other instanceof B2PolygonShape);
 
     this.m_centroid.Copy(other.m_centroid);
     this.m_count = other.m_count;
-    this.m_vertices = b2Vec2.MakeArray(this.m_count);
-    this.m_normals = b2Vec2.MakeArray(this.m_count);
+    this.m_vertices = B2Vec2.MakeArray(this.m_count);
+    this.m_normals = B2Vec2.MakeArray(this.m_count);
     for (let i: number = 0; i < this.m_count; ++i) {
       this.m_vertices[i].Copy(other.m_vertices[i]);
       this.m_normals[i].Copy(other.m_normals[i]);
@@ -58,7 +58,7 @@ export class b2PolygonShape extends b2Shape {
     return this;
   }
 
-  /// @see b2Shape::GetChildCount
+  /// @see B2Shape::GetChildCount
   public GetChildCount(): number {
     return 1;
   }
@@ -67,12 +67,12 @@ export class b2PolygonShape extends b2Shape {
   /// @warning the points may be re-ordered, even if they form a convex polygon
   /// @warning collinear points are handled but not removed. Collinear points
   /// may lead to poor stacking behavior.
-  private static Set_s_r = new b2Vec2();
-  private static Set_s_v = new b2Vec2();
-  public Set(vertices: XY[]): b2PolygonShape;
-  public Set(vertices: XY[], count: number): b2PolygonShape;
-  public Set(vertices: number[]): b2PolygonShape;
-  public Set(...args: any[]): b2PolygonShape {
+  private static Set_s_r = new B2Vec2();
+  private static Set_s_v = new B2Vec2();
+  public Set(vertices: XY[]): B2PolygonShape;
+  public Set(vertices: XY[], count: number): B2PolygonShape;
+  public Set(vertices: number[]): B2PolygonShape;
+  public Set(...args: any[]): B2PolygonShape {
     if (typeof args[0][0] === "number") {
       const vertices: number[] = args[0];
       if (vertices.length % 2 !== 0) { throw new Error(); }
@@ -83,9 +83,9 @@ export class b2PolygonShape extends b2Shape {
       return this._Set((index: number): XY => vertices[index], count);
     }
   }
-  public _Set(vertices: (index: number) => XY, count: number): b2PolygonShape {
+  public _Set(vertices: (index: number) => XY, count: number): B2PolygonShape {
 
-    // DEBUG: b2Assert(3 <= count);
+    // DEBUG: B2Assert(3 <= count);
     if (count < 3) {
       return this.SetAsBox(1, 1);
     }
@@ -95,11 +95,11 @@ export class b2PolygonShape extends b2Shape {
     // Perform welding and copy vertices into local buffer.
     const ps: XY[] = [];
     for (let i = 0; i < n; ++i) {
-      const /*b2Vec2*/ v = vertices(i);
+      const /*B2Vec2*/ v = vertices(i);
 
       let /*bool*/ unique = true;
       for (let /*int32*/ j = 0; j < ps.length; ++j) {
-        if (b2Vec2.DistanceSquaredVV(v, ps[j]) < ((0.5 * b2_linearSlop) * (0.5 * b2_linearSlop))) {
+        if (B2Vec2.DistanceSquaredVV(v, ps[j]) < ((0.5 * B2_linearSlop) * (0.5 * B2_linearSlop))) {
           unique = false;
           break;
         }
@@ -113,7 +113,7 @@ export class b2PolygonShape extends b2Shape {
     n = ps.length;
     if (n < 3) {
       // Polygon is degenerate.
-      // DEBUG: b2Assert(false);
+      // DEBUG: B2Assert(false);
       return this.SetAsBox(1.0, 1.0);
     }
 
@@ -145,9 +145,9 @@ export class b2PolygonShape extends b2Shape {
           continue;
         }
 
-        const r: b2Vec2 = b2Vec2.SubVV(ps[ie], ps[hull[m]], b2PolygonShape.Set_s_r);
-        const v: b2Vec2 = b2Vec2.SubVV(ps[j], ps[hull[m]], b2PolygonShape.Set_s_v);
-        const c: number = b2Vec2.CrossVV(r, v);
+        const r: B2Vec2 = B2Vec2.SubVV(ps[ie], ps[hull[m]], B2PolygonShape.Set_s_r);
+        const v: B2Vec2 = B2Vec2.SubVV(ps[j], ps[hull[m]], B2PolygonShape.Set_s_v);
+        const c: number = B2Vec2.CrossVV(r, v);
         if (c < 0) {
           ie = j;
         }
@@ -167,8 +167,8 @@ export class b2PolygonShape extends b2Shape {
     }
 
     this.m_count = m;
-    this.m_vertices = b2Vec2.MakeArray(this.m_count);
-    this.m_normals = b2Vec2.MakeArray(this.m_count);
+    this.m_vertices = B2Vec2.MakeArray(this.m_count);
+    this.m_normals = B2Vec2.MakeArray(this.m_count);
 
     // Copy vertices.
     for (let i: number = 0; i < m; ++i) {
@@ -177,15 +177,15 @@ export class b2PolygonShape extends b2Shape {
 
     // Compute normals. Ensure the edges have non-zero length.
     for (let i: number = 0; i < m; ++i) {
-      const vertexi1: b2Vec2 = this.m_vertices[i];
-      const vertexi2: b2Vec2 = this.m_vertices[(i + 1) % m];
-      const edge: b2Vec2 = b2Vec2.SubVV(vertexi2, vertexi1, b2Vec2.s_t0); // edge uses s_t0
-      // DEBUG: b2Assert(edge.LengthSquared() > b2_epsilon_sq);
-      b2Vec2.CrossVOne(edge, this.m_normals[i]).SelfNormalize();
+      const vertexi1: B2Vec2 = this.m_vertices[i];
+      const vertexi2: B2Vec2 = this.m_vertices[(i + 1) % m];
+      const edge: B2Vec2 = B2Vec2.SubVV(vertexi2, vertexi1, B2Vec2.s_t0); // edge uses s_t0
+      // DEBUG: B2Assert(edge.LengthSquared() > B2_epsilon_sq);
+      B2Vec2.CrossVOne(edge, this.m_normals[i]).SelfNormalize();
     }
 
     // Compute the polygon centroid.
-    b2PolygonShape.ComputeCentroid(this.m_vertices, m, this.m_centroid);
+    B2PolygonShape.ComputeCentroid(this.m_vertices, m, this.m_centroid);
 
     return this;
   }
@@ -195,10 +195,10 @@ export class b2PolygonShape extends b2Shape {
   /// @param hy the half-height.
   /// @param center the center of the box in local coordinates.
   /// @param angle the rotation of the box in local coordinates.
-  public SetAsBox(hx: number, hy: number, center?: XY, angle: number = 0): b2PolygonShape {
+  public SetAsBox(hx: number, hy: number, center?: XY, angle: number = 0): B2PolygonShape {
     this.m_count = 4;
-    this.m_vertices = b2Vec2.MakeArray(this.m_count);
-    this.m_normals = b2Vec2.MakeArray(this.m_count);
+    this.m_vertices = B2Vec2.MakeArray(this.m_count);
+    this.m_normals = B2Vec2.MakeArray(this.m_count);
     this.m_vertices[0].Set((-hx), (-hy));
     this.m_vertices[1].Set(hx, (-hy));
     this.m_vertices[2].Set(hx, hy);
@@ -212,27 +212,27 @@ export class b2PolygonShape extends b2Shape {
     if (center) {
       this.m_centroid.Copy(center);
 
-      const xf: b2Transform = new b2Transform();
+      const xf: B2Transform = new B2Transform();
       xf.SetPosition(center);
       xf.SetRotationAngle(angle);
 
       // Transform vertices and normals.
       for (let i: number = 0; i < this.m_count; ++i) {
-        b2Transform.MulXV(xf, this.m_vertices[i], this.m_vertices[i]);
-        b2Rot.MulRV(xf.q, this.m_normals[i], this.m_normals[i]);
+        B2Transform.MulXV(xf, this.m_vertices[i], this.m_vertices[i]);
+        B2Rot.MulRV(xf.q, this.m_normals[i], this.m_normals[i]);
       }
     }
 
     return this;
   }
 
-  /// @see b2Shape::TestPoint
-  private static TestPoint_s_pLocal = new b2Vec2();
-  public TestPoint(xf: b2Transform, p: XY): boolean {
-    const pLocal: b2Vec2 = b2Transform.MulTXV(xf, p, b2PolygonShape.TestPoint_s_pLocal);
+  /// @see B2Shape::TestPoint
+  private static TestPoint_s_pLocal = new B2Vec2();
+  public TestPoint(xf: B2Transform, p: XY): boolean {
+    const pLocal: B2Vec2 = B2Transform.MulTXV(xf, p, B2PolygonShape.TestPoint_s_pLocal);
 
     for (let i: number = 0; i < this.m_count; ++i) {
-      const dot: number = b2Vec2.DotVV(this.m_normals[i], b2Vec2.SubVV(pLocal, this.m_vertices[i], b2Vec2.s_t0));
+      const dot: number = B2Vec2.DotVV(this.m_normals[i], B2Vec2.SubVV(pLocal, this.m_vertices[i], B2Vec2.s_t0));
       if (dot > 0) {
         return false;
       }
@@ -242,18 +242,18 @@ export class b2PolygonShape extends b2Shape {
   }
 
   // #if B2_ENABLE_PARTICLE
-  /// @see b2Shape::ComputeDistance
-  private static ComputeDistance_s_pLocal = new b2Vec2();
-  private static ComputeDistance_s_normalForMaxDistance = new b2Vec2();
-  private static ComputeDistance_s_minDistance = new b2Vec2();
-  private static ComputeDistance_s_distance = new b2Vec2();
-  public ComputeDistance(xf: b2Transform, p: b2Vec2, normal: b2Vec2, childIndex: number): number {
-    const pLocal = b2Transform.MulTXV(xf, p, b2PolygonShape.ComputeDistance_s_pLocal);
-    let maxDistance = -b2_maxFloat;
-    const normalForMaxDistance = b2PolygonShape.ComputeDistance_s_normalForMaxDistance.Copy(pLocal);
+  /// @see B2Shape::ComputeDistance
+  private static ComputeDistance_s_pLocal = new B2Vec2();
+  private static ComputeDistance_s_normalForMaxDistance = new B2Vec2();
+  private static ComputeDistance_s_minDistance = new B2Vec2();
+  private static ComputeDistance_s_distance = new B2Vec2();
+  public ComputeDistance(xf: B2Transform, p: B2Vec2, normal: B2Vec2, childIndex: number): number {
+    const pLocal = B2Transform.MulTXV(xf, p, B2PolygonShape.ComputeDistance_s_pLocal);
+    let maxDistance = -B2_maxFloat;
+    const normalForMaxDistance = B2PolygonShape.ComputeDistance_s_normalForMaxDistance.Copy(pLocal);
 
     for (let i = 0; i < this.m_count; ++i) {
-      const dot = b2Vec2.DotVV(this.m_normals[i], b2Vec2.SubVV(pLocal, this.m_vertices[i], b2Vec2.s_t0));
+      const dot = B2Vec2.DotVV(this.m_normals[i], B2Vec2.SubVV(pLocal, this.m_vertices[i], B2Vec2.s_t0));
       if (dot > maxDistance) {
         maxDistance = dot;
         normalForMaxDistance.Copy(this.m_normals[i]);
@@ -261,10 +261,10 @@ export class b2PolygonShape extends b2Shape {
     }
 
     if (maxDistance > 0) {
-      const minDistance = b2PolygonShape.ComputeDistance_s_minDistance.Copy(normalForMaxDistance);
+      const minDistance = B2PolygonShape.ComputeDistance_s_minDistance.Copy(normalForMaxDistance);
       let minDistance2 = maxDistance * maxDistance;
       for (let i = 0; i < this.m_count; ++i) {
-        const distance = b2Vec2.SubVV(pLocal, this.m_vertices[i], b2PolygonShape.ComputeDistance_s_distance);
+        const distance = B2Vec2.SubVV(pLocal, this.m_vertices[i], B2PolygonShape.ComputeDistance_s_distance);
         const distance2 = distance.LengthSquared();
         if (minDistance2 > distance2) {
           minDistance.Copy(distance);
@@ -272,27 +272,27 @@ export class b2PolygonShape extends b2Shape {
         }
       }
 
-      b2Rot.MulRV(xf.q, minDistance, normal);
+      B2Rot.MulRV(xf.q, minDistance, normal);
       normal.Normalize();
       return Math.sqrt(minDistance2);
     } else {
-      b2Rot.MulRV(xf.q, normalForMaxDistance, normal);
+      B2Rot.MulRV(xf.q, normalForMaxDistance, normal);
       return maxDistance;
     }
   }
   // #endif
 
-  /// Implement b2Shape.
+  /// Implement B2Shape.
   /// @note because the polygon is solid, rays that start inside do not hit because the normal is
   /// not defined.
-  private static RayCast_s_p1 = new b2Vec2();
-  private static RayCast_s_p2 = new b2Vec2();
-  private static RayCast_s_d = new b2Vec2();
-  public RayCast(output: b2RayCastOutput, input: b2RayCastInput, xf: b2Transform, childIndex: number): boolean {
+  private static RayCast_s_p1 = new B2Vec2();
+  private static RayCast_s_p2 = new B2Vec2();
+  private static RayCast_s_d = new B2Vec2();
+  public RayCast(output: B2RayCastOutput, input: B2RayCastInput, xf: B2Transform, childIndex: number): boolean {
     // Put the ray into the polygon's frame of reference.
-    const p1: b2Vec2 = b2Transform.MulTXV(xf, input.p1, b2PolygonShape.RayCast_s_p1);
-    const p2: b2Vec2 = b2Transform.MulTXV(xf, input.p2, b2PolygonShape.RayCast_s_p2);
-    const d: b2Vec2 = b2Vec2.SubVV(p2, p1, b2PolygonShape.RayCast_s_d);
+    const p1: B2Vec2 = B2Transform.MulTXV(xf, input.p1, B2PolygonShape.RayCast_s_p1);
+    const p2: B2Vec2 = B2Transform.MulTXV(xf, input.p2, B2PolygonShape.RayCast_s_p2);
+    const d: B2Vec2 = B2Vec2.SubVV(p2, p1, B2PolygonShape.RayCast_s_d);
 
     let lower: number = 0, upper = input.maxFraction;
 
@@ -302,8 +302,8 @@ export class b2PolygonShape extends b2Shape {
       // p = p1 + a * d
       // dot(normal, p - v) = 0
       // dot(normal, p1 - v) + a * dot(normal, d) = 0
-      const numerator: number = b2Vec2.DotVV(this.m_normals[i], b2Vec2.SubVV(this.m_vertices[i], p1, b2Vec2.s_t0));
-      const denominator: number = b2Vec2.DotVV(this.m_normals[i], d);
+      const numerator: number = B2Vec2.DotVV(this.m_normals[i], B2Vec2.SubVV(this.m_vertices[i], p1, B2Vec2.s_t0));
+      const denominator: number = B2Vec2.DotVV(this.m_normals[i], d);
 
       if (denominator === 0) {
         if (numerator < 0) {
@@ -329,33 +329,33 @@ export class b2PolygonShape extends b2Shape {
       // The use of epsilon here causes the assert on lower to trip
       // in some cases. Apparently the use of epsilon was to make edge
       // shapes work, but now those are handled separately.
-      // if (upper < lower - b2_epsilon)
+      // if (upper < lower - B2_epsilon)
       if (upper < lower) {
         return false;
       }
     }
 
-    // DEBUG: b2Assert(0 <= lower && lower <= input.maxFraction);
+    // DEBUG: B2Assert(0 <= lower && lower <= input.maxFraction);
 
     if (index >= 0) {
       output.fraction = lower;
-      b2Rot.MulRV(xf.q, this.m_normals[index], output.normal);
+      B2Rot.MulRV(xf.q, this.m_normals[index], output.normal);
       return true;
     }
 
     return false;
   }
 
-  /// @see b2Shape::ComputeAABB
-  private static ComputeAABB_s_v = new b2Vec2();
-  public ComputeAABB(aabb: b2AABB, xf: b2Transform, childIndex: number): void {
-    const lower: b2Vec2 = b2Transform.MulXV(xf, this.m_vertices[0], aabb.lowerBound);
-    const upper: b2Vec2 = aabb.upperBound.Copy(lower);
+  /// @see B2Shape::ComputeAABB
+  private static ComputeAABB_s_v = new B2Vec2();
+  public ComputeAABB(aabb: B2AABB, xf: B2Transform, childIndex: number): void {
+    const lower: B2Vec2 = B2Transform.MulXV(xf, this.m_vertices[0], aabb.lowerBound);
+    const upper: B2Vec2 = aabb.upperBound.Copy(lower);
 
     for (let i: number = 0; i < this.m_count; ++i) {
-      const v: b2Vec2 = b2Transform.MulXV(xf, this.m_vertices[i], b2PolygonShape.ComputeAABB_s_v);
-      b2Vec2.MinV(v, lower, lower);
-      b2Vec2.MaxV(v, upper, upper);
+      const v: B2Vec2 = B2Transform.MulXV(xf, this.m_vertices[i], B2PolygonShape.ComputeAABB_s_v);
+      B2Vec2.MinV(v, lower, lower);
+      B2Vec2.MaxV(v, upper, upper);
     }
 
     const r: number = this.m_radius;
@@ -363,12 +363,12 @@ export class b2PolygonShape extends b2Shape {
     upper.SelfAddXY(r, r);
   }
 
-  /// @see b2Shape::ComputeMass
-  private static ComputeMass_s_center = new b2Vec2();
-  private static ComputeMass_s_s = new b2Vec2();
-  private static ComputeMass_s_e1 = new b2Vec2();
-  private static ComputeMass_s_e2 = new b2Vec2();
-  public ComputeMass(massData: b2MassData, density: number): void {
+  /// @see B2Shape::ComputeMass
+  private static ComputeMass_s_center = new B2Vec2();
+  private static ComputeMass_s_s = new B2Vec2();
+  private static ComputeMass_s_e1 = new B2Vec2();
+  private static ComputeMass_s_e2 = new B2Vec2();
+  public ComputeMass(massData: B2MassData, density: number): void {
     // Polygon mass, centroid, and inertia.
     // Let rho be the polygon density in mass per unit area.
     // Then:
@@ -393,30 +393,30 @@ export class b2PolygonShape extends b2Shape {
     //
     // The rest of the derivation is handled by computer algebra.
 
-    // DEBUG: b2Assert(this.m_count >= 3);
+    // DEBUG: B2Assert(this.m_count >= 3);
 
-    const center: b2Vec2 = b2PolygonShape.ComputeMass_s_center.SetZero();
+    const center: B2Vec2 = B2PolygonShape.ComputeMass_s_center.SetZero();
     let area: number = 0;
     let I: number = 0;
 
     // Get a reference point for forming triangles.
     // Use the first vertex to reduce round-off errors.
-    const s: b2Vec2 = b2PolygonShape.ComputeMass_s_s.Copy(this.m_vertices[0]);
+    const s: B2Vec2 = B2PolygonShape.ComputeMass_s_s.Copy(this.m_vertices[0]);
 
     const k_inv3: number = 1 / 3;
 
     for (let i: number = 0; i < this.m_count; ++i) {
       // Triangle vertices.
-      const e1: b2Vec2 = b2Vec2.SubVV(this.m_vertices[i], s, b2PolygonShape.ComputeMass_s_e1);
-      const e2: b2Vec2 = b2Vec2.SubVV(this.m_vertices[(i + 1) % this.m_count], s, b2PolygonShape.ComputeMass_s_e2);
+      const e1: B2Vec2 = B2Vec2.SubVV(this.m_vertices[i], s, B2PolygonShape.ComputeMass_s_e1);
+      const e2: B2Vec2 = B2Vec2.SubVV(this.m_vertices[(i + 1) % this.m_count], s, B2PolygonShape.ComputeMass_s_e2);
 
-      const D: number = b2Vec2.CrossVV(e1, e2);
+      const D: number = B2Vec2.CrossVV(e1, e2);
 
       const triangleArea: number = 0.5 * D;
       area += triangleArea;
 
       // Area weighted centroid
-      center.SelfAdd(b2Vec2.MulSV(triangleArea * k_inv3, b2Vec2.AddVV(e1, e2, b2Vec2.s_t0), b2Vec2.s_t1));
+      center.SelfAdd(B2Vec2.MulSV(triangleArea * k_inv3, B2Vec2.AddVV(e1, e2, B2Vec2.s_t0), B2Vec2.s_t1));
 
       const ex1: number = e1.x;
       const ey1: number = e1.y;
@@ -433,33 +433,33 @@ export class b2PolygonShape extends b2Shape {
     massData.mass = density * area;
 
     // Center of mass
-    // DEBUG: b2Assert(area > b2_epsilon);
+    // DEBUG: B2Assert(area > B2_epsilon);
     center.SelfMul(1 / area);
-    b2Vec2.AddVV(center, s, massData.center);
+    B2Vec2.AddVV(center, s, massData.center);
 
     // Inertia tensor relative to the local origin (point s).
     massData.I = density * I;
 
     // Shift to center of mass then to original body origin.
-    massData.I += massData.mass * (b2Vec2.DotVV(massData.center, massData.center) - b2Vec2.DotVV(center, center));
+    massData.I += massData.mass * (B2Vec2.DotVV(massData.center, massData.center) - B2Vec2.DotVV(center, center));
   }
 
-  private static Validate_s_e = new b2Vec2();
-  private static Validate_s_v = new b2Vec2();
+  private static Validate_s_e = new B2Vec2();
+  private static Validate_s_v = new B2Vec2();
   public Validate(): boolean {
     for (let i: number = 0; i < this.m_count; ++i) {
       const i1 = i;
       const i2 = (i + 1) % this.m_count;
-      const p: b2Vec2 = this.m_vertices[i1];
-      const e: b2Vec2 = b2Vec2.SubVV(this.m_vertices[i2], p, b2PolygonShape.Validate_s_e);
+      const p: B2Vec2 = this.m_vertices[i1];
+      const e: B2Vec2 = B2Vec2.SubVV(this.m_vertices[i2], p, B2PolygonShape.Validate_s_e);
 
       for (let j: number = 0; j < this.m_count; ++j) {
         if (j === i1 || j === i2) {
           continue;
         }
 
-        const v: b2Vec2 = b2Vec2.SubVV(this.m_vertices[j], p, b2PolygonShape.Validate_s_v);
-        const c: number = b2Vec2.CrossVV(e, v);
+        const v: B2Vec2 = B2Vec2.SubVV(this.m_vertices[j], p, B2PolygonShape.Validate_s_v);
+        const c: number = B2Vec2.CrossVV(e, v);
         if (c < 0) {
           return false;
         }
@@ -469,21 +469,21 @@ export class b2PolygonShape extends b2Shape {
     return true;
   }
 
-  public SetupDistanceProxy(proxy: b2DistanceProxy, index: number): void {
+  public SetupDistanceProxy(proxy: B2DistanceProxy, index: number): void {
     proxy.m_vertices = this.m_vertices;
     proxy.m_count = this.m_count;
     proxy.m_radius = this.m_radius;
   }
 
-  private static ComputeSubmergedArea_s_normalL = new b2Vec2();
-  private static ComputeSubmergedArea_s_md = new b2MassData();
-  private static ComputeSubmergedArea_s_intoVec = new b2Vec2();
-  private static ComputeSubmergedArea_s_outoVec = new b2Vec2();
-  private static ComputeSubmergedArea_s_center = new b2Vec2();
-  public ComputeSubmergedArea(normal: b2Vec2, offset: number, xf: b2Transform, c: b2Vec2): number {
+  private static ComputeSubmergedArea_s_normalL = new B2Vec2();
+  private static ComputeSubmergedArea_s_md = new B2MassData();
+  private static ComputeSubmergedArea_s_intoVec = new B2Vec2();
+  private static ComputeSubmergedArea_s_outoVec = new B2Vec2();
+  private static ComputeSubmergedArea_s_center = new B2Vec2();
+  public ComputeSubmergedArea(normal: B2Vec2, offset: number, xf: B2Transform, c: B2Vec2): number {
     // Transform plane into shape co-ordinates
-    const normalL: b2Vec2 = b2Rot.MulTRV(xf.q, normal, b2PolygonShape.ComputeSubmergedArea_s_normalL);
-    const offsetL: number = offset - b2Vec2.DotVV(normal, xf.p);
+    const normalL: B2Vec2 = B2Rot.MulTRV(xf.q, normal, B2PolygonShape.ComputeSubmergedArea_s_normalL);
+    const offsetL: number = offset - B2Vec2.DotVV(normal, xf.p);
 
     const depths: number[] = [];
     let diveCount: number = 0;
@@ -492,8 +492,8 @@ export class b2PolygonShape extends b2Shape {
 
     let lastSubmerged: boolean = false;
     for (let i: number = 0; i < this.m_count; ++i) {
-      depths[i] = b2Vec2.DotVV(normalL, this.m_vertices[i]) - offsetL;
-      const isSubmerged: boolean = depths[i] < (-b2_epsilon);
+      depths[i] = B2Vec2.DotVV(normalL, this.m_vertices[i]) - offsetL;
+      const isSubmerged: boolean = depths[i] < (-B2_epsilon);
       if (i > 0) {
         if (isSubmerged) {
           if (!lastSubmerged) {
@@ -513,9 +513,9 @@ export class b2PolygonShape extends b2Shape {
       case 0:
         if (lastSubmerged) {
           // Completely submerged
-          const md: b2MassData = b2PolygonShape.ComputeSubmergedArea_s_md;
+          const md: B2MassData = B2PolygonShape.ComputeSubmergedArea_s_md;
           this.ComputeMass(md, 1);
-          b2Transform.MulXV(xf, md.center, c);
+          B2Transform.MulXV(xf, md.center, c);
           return md.mass;
         } else {
           // Completely dry
@@ -534,18 +534,18 @@ export class b2PolygonShape extends b2Shape {
     const intoLamdda: number = (0 - depths[intoIndex]) / (depths[intoIndex2] - depths[intoIndex]);
     const outoLamdda: number = (0 - depths[outoIndex]) / (depths[outoIndex2] - depths[outoIndex]);
 
-    const intoVec: b2Vec2 = b2PolygonShape.ComputeSubmergedArea_s_intoVec.Set(
+    const intoVec: B2Vec2 = B2PolygonShape.ComputeSubmergedArea_s_intoVec.Set(
       this.m_vertices[intoIndex].x * (1 - intoLamdda) + this.m_vertices[intoIndex2].x * intoLamdda,
       this.m_vertices[intoIndex].y * (1 - intoLamdda) + this.m_vertices[intoIndex2].y * intoLamdda);
-    const outoVec: b2Vec2 = b2PolygonShape.ComputeSubmergedArea_s_outoVec.Set(
+    const outoVec: B2Vec2 = B2PolygonShape.ComputeSubmergedArea_s_outoVec.Set(
       this.m_vertices[outoIndex].x * (1 - outoLamdda) + this.m_vertices[outoIndex2].x * outoLamdda,
       this.m_vertices[outoIndex].y * (1 - outoLamdda) + this.m_vertices[outoIndex2].y * outoLamdda);
 
     // Initialize accumulator
     let area: number = 0;
-    const center: b2Vec2 = b2PolygonShape.ComputeSubmergedArea_s_center.SetZero();
-    let p2: b2Vec2 = this.m_vertices[intoIndex2];
-    let p3: b2Vec2;
+    const center: B2Vec2 = B2PolygonShape.ComputeSubmergedArea_s_center.SetZero();
+    let p2: B2Vec2 = this.m_vertices[intoIndex2];
+    let p3: B2Vec2;
 
     // An awkward loop from intoIndex2+1 to outIndex2
     let i: number = intoIndex2;
@@ -568,48 +568,48 @@ export class b2PolygonShape extends b2Shape {
 
     // Normalize and transform centroid
     center.SelfMul(1 / area);
-    b2Transform.MulXV(xf, center, c);
+    B2Transform.MulXV(xf, center, c);
 
     return area;
   }
 
   public Dump(log: (format: string, ...args: any[]) => void): void {
-    log("    const shape: b2PolygonShape = new b2PolygonShape();\n");
-    log("    const vs: b2Vec2[] = [];\n");
+    log("    const shape: B2PolygonShape = new B2PolygonShape();\n");
+    log("    const vs: B2Vec2[] = [];\n");
     for (let i: number = 0; i < this.m_count; ++i) {
-      log("    vs[%d] = new b2Vec2(%.15f, %.15f);\n", i, this.m_vertices[i].x, this.m_vertices[i].y);
+      log("    vs[%d] = new B2Vec2(%.15f, %.15f);\n", i, this.m_vertices[i].x, this.m_vertices[i].y);
     }
     log("    shape.Set(vs, %d);\n", this.m_count);
   }
 
-  private static ComputeCentroid_s_s = new b2Vec2();
-  private static ComputeCentroid_s_p1 = new b2Vec2();
-  private static ComputeCentroid_s_p2 = new b2Vec2();
-  private static ComputeCentroid_s_p3 = new b2Vec2();
-  private static ComputeCentroid_s_e1 = new b2Vec2();
-  private static ComputeCentroid_s_e2 = new b2Vec2();
-  public static ComputeCentroid(vs: b2Vec2[], count: number, out: b2Vec2): b2Vec2 {
-    // DEBUG: b2Assert(count >= 3);
+  private static ComputeCentroid_s_s = new B2Vec2();
+  private static ComputeCentroid_s_p1 = new B2Vec2();
+  private static ComputeCentroid_s_p2 = new B2Vec2();
+  private static ComputeCentroid_s_p3 = new B2Vec2();
+  private static ComputeCentroid_s_e1 = new B2Vec2();
+  private static ComputeCentroid_s_e2 = new B2Vec2();
+  public static ComputeCentroid(vs: B2Vec2[], count: number, out: B2Vec2): B2Vec2 {
+    // DEBUG: B2Assert(count >= 3);
 
-    const c: b2Vec2 = out; c.SetZero();
+    const c: B2Vec2 = out; c.SetZero();
     let area: number = 0;
 
     // Get a reference point for forming triangles.
     // Use the first vertex to reduce round-off errors.
-    const s: b2Vec2 = b2PolygonShape.ComputeCentroid_s_s.Copy(vs[0]);
+    const s: B2Vec2 = B2PolygonShape.ComputeCentroid_s_s.Copy(vs[0]);
 
     const inv3: number = 1 / 3;
 
     for (let i: number = 0; i < count; ++i) {
       // Triangle vertices.
-      const p1: b2Vec2 = b2Vec2.SubVV(vs[0], s, b2PolygonShape.ComputeCentroid_s_p1);
-      const p2: b2Vec2 = b2Vec2.SubVV(vs[i], s, b2PolygonShape.ComputeCentroid_s_p2);
-      const p3: b2Vec2 = b2Vec2.SubVV(vs[(i + 1) % count], s, b2PolygonShape.ComputeCentroid_s_p3);
+      const p1: B2Vec2 = B2Vec2.SubVV(vs[0], s, B2PolygonShape.ComputeCentroid_s_p1);
+      const p2: B2Vec2 = B2Vec2.SubVV(vs[i], s, B2PolygonShape.ComputeCentroid_s_p2);
+      const p3: B2Vec2 = B2Vec2.SubVV(vs[(i + 1) % count], s, B2PolygonShape.ComputeCentroid_s_p3);
 
-      const e1: b2Vec2 = b2Vec2.SubVV(p2, p1, b2PolygonShape.ComputeCentroid_s_e1);
-      const e2: b2Vec2 = b2Vec2.SubVV(p3, p1, b2PolygonShape.ComputeCentroid_s_e2);
+      const e1: B2Vec2 = B2Vec2.SubVV(p2, p1, B2PolygonShape.ComputeCentroid_s_e1);
+      const e2: B2Vec2 = B2Vec2.SubVV(p3, p1, B2PolygonShape.ComputeCentroid_s_e2);
 
-      const D: number = b2Vec2.CrossVV(e1, e2);
+      const D: number = B2Vec2.CrossVV(e1, e2);
 
       const triangleArea: number = 0.5 * D;
       area += triangleArea;
@@ -620,7 +620,7 @@ export class b2PolygonShape extends b2Shape {
     }
 
     // Centroid
-    // DEBUG: b2Assert(area > b2_epsilon);
+    // DEBUG: B2Assert(area > B2_epsilon);
     // c = (1.0f / area) * c + s;
     c.x = (1 / area) * c.x + s.x;
     c.y = (1 / area) * c.y + s.y;
@@ -635,20 +635,20 @@ export class b2PolygonShape extends b2Shape {
       p[i] = vs[i];
     }
     p[count] = p[0];
-    const minArea = b2_maxFloat;
+    const minArea = B2_maxFloat;
     for (i = 1; i <= count; ++i) {
       const root = p[i - 1];
       const uxX = p[i].x - root.x;
       const uxY = p[i].y - root.y;
-      const length = b2Sqrt(uxX * uxX + uxY * uxY);
+      const length = B2Sqrt(uxX * uxX + uxY * uxY);
       uxX /= length;
       uxY /= length;
       const uyX = (-uxY);
       const uyY = uxX;
-      const lowerX = b2_maxFloat;
-      const lowerY = b2_maxFloat;
-      const upperX = (-b2_maxFloat);
-      const upperY = (-b2_maxFloat);
+      const lowerX = B2_maxFloat;
+      const lowerY = B2_maxFloat;
+      const upperX = (-B2_maxFloat);
+      const upperY = (-B2_maxFloat);
       for (let j: number = 0; j < count; ++j) {
         const dX = p[j].x - root.x;
         const dY = p[j].y - root.y;

@@ -18,11 +18,11 @@
 
 /// Timer for profiling. This has platform specific code and may
 /// not work on every platform.
-export class b2Timer {
+export class B2Timer {
   public m_start: number = Date.now();
 
   /// Reset the timer.
-  public Reset(): b2Timer {
+  public Reset(): B2Timer {
     this.m_start = Date.now();
     return this;
   }
@@ -33,7 +33,7 @@ export class b2Timer {
   }
 }
 
-export class b2Counter {
+export class B2Counter {
   public m_count: number = 0;
   public m_min_count: number = 0;
   public m_max_count: number = 0;

@@ -16,13 +16,13 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-import { b2_linearSlop, b2_angularSlop, b2Maybe } from "../common/b2_settings.js";
-import { b2Abs, b2Vec2, b2Vec3, b2Mat33, b2Rot, XY } from "../common/b2_math.js";
-import { b2Body } from "./b2_body.js";
-import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint.js";
-import { b2SolverData } from "./b2_time_step.js";
+import { B2_linearSlop, B2_angularSlop, B2Maybe } from "../common/b2_settings.js";
+import { B2Abs, B2Vec2, B2Vec3, B2Mat33, B2Rot, XY } from "../common/b2_math.js";
+import { B2Body } from "./b2_body.js";
+import { B2Joint, B2JointDef, B2JointType, B2IJointDef } from "./b2_joint.js";
+import { B2SolverData } from "./b2_time_step.js";
 
-export interface b2IWeldJointDef extends b2IJointDef {
+export interface B2IWeldJointDef extends B2IJointDef {
   localAnchorA?: XY;
 
   localAnchorB?: XY;
@@ -37,10 +37,10 @@ export interface b2IWeldJointDef extends b2IJointDef {
 /// Weld joint definition. You need to specify local anchor points
 /// where they are attached and the relative body angle. The position
 /// of the anchor points is important for computing the reaction torque.
-export class b2WeldJointDef extends b2JointDef implements b2IWeldJointDef {
-  public readonly localAnchorA: b2Vec2 = new b2Vec2();
+export class B2WeldJointDef extends B2JointDef implements B2IWeldJointDef {
+  public readonly localAnchorA: B2Vec2 = new B2Vec2();
 
-  public readonly localAnchorB: b2Vec2 = new b2Vec2();
+  public readonly localAnchorB: B2Vec2 = new B2Vec2();
 
   public referenceAngle: number = 0;
 
@@ -49,10 +49,10 @@ export class b2WeldJointDef extends b2JointDef implements b2IWeldJointDef {
   public damping: number = 0;
 
   constructor() {
-    super(b2JointType.e_weldJoint);
+    super(B2JointType.e_weldJoint);
   }
 
-  public Initialize(bA: b2Body, bB: b2Body, anchor: XY): void {
+  public Initialize(bA: B2Body, bB: B2Body, anchor: XY): void {
     this.bodyA = bA;
     this.bodyB = bB;
     this.bodyA.GetLocalPoint(anchor, this.localAnchorA);
@@ -61,51 +61,51 @@ export class b2WeldJointDef extends b2JointDef implements b2IWeldJointDef {
   }
 }
 
-export class b2WeldJoint extends b2Joint {
+export class B2WeldJoint extends B2Joint {
   public m_stiffness: number = 0;
   public m_damping: number = 0;
   public m_bias: number = 0;
 
   // Solver shared
-  public readonly m_localAnchorA: b2Vec2 = new b2Vec2();
-  public readonly m_localAnchorB: b2Vec2 = new b2Vec2();
+  public readonly m_localAnchorA: B2Vec2 = new B2Vec2();
+  public readonly m_localAnchorB: B2Vec2 = new B2Vec2();
   public m_referenceAngle: number = 0;
   public m_gamma: number = 0;
-  public readonly m_impulse: b2Vec3 = new b2Vec3(0, 0, 0);
+  public readonly m_impulse: B2Vec3 = new B2Vec3(0, 0, 0);
 
   // Solver temp
   public m_indexA: number = 0;
   public m_indexB: number = 0;
-  public readonly m_rA: b2Vec2 = new b2Vec2();
-  public readonly m_rB: b2Vec2 = new b2Vec2();
-  public readonly m_localCenterA: b2Vec2 = new b2Vec2();
-  public readonly m_localCenterB: b2Vec2 = new b2Vec2();
+  public readonly m_rA: B2Vec2 = new B2Vec2();
+  public readonly m_rB: B2Vec2 = new B2Vec2();
+  public readonly m_localCenterA: B2Vec2 = new B2Vec2();
+  public readonly m_localCenterB: B2Vec2 = new B2Vec2();
   public m_invMassA: number = 0;
   public m_invMassB: number = 0;
   public m_invIA: number = 0;
   public m_invIB: number = 0;
-  public readonly m_mass: b2Mat33 = new b2Mat33();
+  public readonly m_mass: B2Mat33 = new B2Mat33();
 
-  public readonly m_qA: b2Rot = new b2Rot();
-  public readonly m_qB: b2Rot = new b2Rot();
-  public readonly m_lalcA: b2Vec2 = new b2Vec2();
-  public readonly m_lalcB: b2Vec2 = new b2Vec2();
-  public readonly m_K: b2Mat33 = new b2Mat33();
+  public readonly m_qA: B2Rot = new B2Rot();
+  public readonly m_qB: B2Rot = new B2Rot();
+  public readonly m_lalcA: B2Vec2 = new B2Vec2();
+  public readonly m_lalcB: B2Vec2 = new B2Vec2();
+  public readonly m_K: B2Mat33 = new B2Mat33();
 
-  constructor(def: b2IWeldJointDef) {
+  constructor(def: B2IWeldJointDef) {
     super(def);
 
-    this.m_stiffness = b2Maybe(def.stiffness, 0);
-    this.m_damping = b2Maybe(def.damping, 0);
+    this.m_stiffness = B2Maybe(def.stiffness, 0);
+    this.m_damping = B2Maybe(def.damping, 0);
 
-    this.m_localAnchorA.Copy(b2Maybe(def.localAnchorA, b2Vec2.ZERO));
-    this.m_localAnchorB.Copy(b2Maybe(def.localAnchorB, b2Vec2.ZERO));
-    this.m_referenceAngle = b2Maybe(def.referenceAngle, 0);
+    this.m_localAnchorA.Copy(B2Maybe(def.localAnchorA, B2Vec2.ZERO));
+    this.m_localAnchorB.Copy(B2Maybe(def.localAnchorB, B2Vec2.ZERO));
+    this.m_referenceAngle = B2Maybe(def.referenceAngle, 0);
     this.m_impulse.SetZero();
   }
 
-  private static InitVelocityConstraints_s_P = new b2Vec2();
-  public InitVelocityConstraints(data: b2SolverData): void {
+  private static InitVelocityConstraints_s_P = new B2Vec2();
+  public InitVelocityConstraints(data: B2SolverData): void {
     this.m_indexA = this.m_bodyA.m_islandIndex;
     this.m_indexB = this.m_bodyB.m_islandIndex;
     this.m_localCenterA.Copy(this.m_bodyA.m_sweep.localCenter);
@@ -116,21 +116,21 @@ export class b2WeldJoint extends b2Joint {
     this.m_invIB = this.m_bodyB.m_invI;
 
     const aA: number = data.positions[this.m_indexA].a;
-    const vA: b2Vec2 = data.velocities[this.m_indexA].v;
+    const vA: B2Vec2 = data.velocities[this.m_indexA].v;
     let wA: number = data.velocities[this.m_indexA].w;
 
     const aB: number = data.positions[this.m_indexB].a;
-    const vB: b2Vec2 = data.velocities[this.m_indexB].v;
+    const vB: B2Vec2 = data.velocities[this.m_indexB].v;
     let wB: number = data.velocities[this.m_indexB].w;
 
-    const qA: b2Rot = this.m_qA.SetAngle(aA), qB: b2Rot = this.m_qB.SetAngle(aB);
+    const qA: B2Rot = this.m_qA.SetAngle(aA), qB: B2Rot = this.m_qB.SetAngle(aB);
 
-    // m_rA = b2Mul(qA, m_localAnchorA - m_localCenterA);
-    b2Vec2.SubVV(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
-    b2Rot.MulRV(qA, this.m_lalcA, this.m_rA);
-    // m_rB = b2Mul(qB, m_localAnchorB - m_localCenterB);
-    b2Vec2.SubVV(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
-    b2Rot.MulRV(qB, this.m_lalcB, this.m_rB);
+    // m_rA = B2Mul(qA, m_localAnchorA - m_localCenterA);
+    B2Vec2.SubVV(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
+    B2Rot.MulRV(qA, this.m_lalcA, this.m_rA);
+    // m_rB = B2Mul(qB, m_localAnchorB - m_localCenterB);
+    B2Vec2.SubVV(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
+    B2Rot.MulRV(qB, this.m_lalcB, this.m_rB);
 
     // J = [-I -r1_skew I r2_skew]
     //     [ 0       -1 0       1]
@@ -144,7 +144,7 @@ export class b2WeldJoint extends b2Joint {
     const mA: number = this.m_invMassA, mB: number = this.m_invMassB;
     const iA: number = this.m_invIA, iB: number = this.m_invIB;
 
-    const K: b2Mat33 = this.m_K;
+    const K: B2Mat33 = this.m_K;
     K.ex.x = mA + mB + this.m_rA.y * this.m_rA.y * iA + this.m_rB.y * this.m_rB.y * iB;
     K.ey.x = -this.m_rA.y * this.m_rA.x * iA - this.m_rB.y * this.m_rB.x * iB;
     K.ez.x = -this.m_rA.y * iA - this.m_rB.y * iB;
@@ -186,16 +186,16 @@ export class b2WeldJoint extends b2Joint {
       // Scale impulses to support a variable time step.
       this.m_impulse.SelfMul(data.step.dtRatio);
 
-      // b2Vec2 P(m_impulse.x, m_impulse.y);
-      const P: b2Vec2 = b2WeldJoint.InitVelocityConstraints_s_P.Set(this.m_impulse.x, this.m_impulse.y);
+      // B2Vec2 P(m_impulse.x, m_impulse.y);
+      const P: B2Vec2 = B2WeldJoint.InitVelocityConstraints_s_P.Set(this.m_impulse.x, this.m_impulse.y);
 
       // vA -= mA * P;
       vA.SelfMulSub(mA, P);
-      wA -= iA * (b2Vec2.CrossVV(this.m_rA, P) + this.m_impulse.z);
+      wA -= iA * (B2Vec2.CrossVV(this.m_rA, P) + this.m_impulse.z);
 
       // vB += mB * P;
       vB.SelfMulAdd(mB, P);
-      wB += iB * (b2Vec2.CrossVV(this.m_rB, P) + this.m_impulse.z);
+      wB += iB * (B2Vec2.CrossVV(this.m_rB, P) + this.m_impulse.z);
     } else {
       this.m_impulse.SetZero();
     }
@@ -206,14 +206,14 @@ export class b2WeldJoint extends b2Joint {
     data.velocities[this.m_indexB].w = wB;
   }
 
-  private static SolveVelocityConstraints_s_Cdot1 = new b2Vec2();
-  private static SolveVelocityConstraints_s_impulse1 = new b2Vec2();
-  private static SolveVelocityConstraints_s_impulse = new b2Vec3();
-  private static SolveVelocityConstraints_s_P = new b2Vec2();
-  public SolveVelocityConstraints(data: b2SolverData): void {
-    const vA: b2Vec2 = data.velocities[this.m_indexA].v;
+  private static SolveVelocityConstraints_s_Cdot1 = new B2Vec2();
+  private static SolveVelocityConstraints_s_impulse1 = new B2Vec2();
+  private static SolveVelocityConstraints_s_impulse = new B2Vec3();
+  private static SolveVelocityConstraints_s_P = new B2Vec2();
+  public SolveVelocityConstraints(data: B2SolverData): void {
+    const vA: B2Vec2 = data.velocities[this.m_indexA].v;
     let wA: number = data.velocities[this.m_indexA].w;
-    const vB: b2Vec2 = data.velocities[this.m_indexB].v;
+    const vB: B2Vec2 = data.velocities[this.m_indexB].v;
     let wB: number = data.velocities[this.m_indexB].w;
 
     const mA: number = this.m_invMassA, mB: number = this.m_invMassB;
@@ -228,52 +228,52 @@ export class b2WeldJoint extends b2Joint {
       wA -= iA * impulse2;
       wB += iB * impulse2;
 
-      // b2Vec2 Cdot1 = vB + b2Vec2.CrossSV(wB, this.m_rB) - vA - b2Vec2.CrossSV(wA, this.m_rA);
-      const Cdot1: b2Vec2 = b2Vec2.SubVV(
-        b2Vec2.AddVCrossSV(vB, wB, this.m_rB, b2Vec2.s_t0),
-        b2Vec2.AddVCrossSV(vA, wA, this.m_rA, b2Vec2.s_t1),
-        b2WeldJoint.SolveVelocityConstraints_s_Cdot1);
+      // B2Vec2 Cdot1 = vB + B2Vec2.CrossSV(wB, this.m_rB) - vA - B2Vec2.CrossSV(wA, this.m_rA);
+      const Cdot1: B2Vec2 = B2Vec2.SubVV(
+        B2Vec2.AddVCrossSV(vB, wB, this.m_rB, B2Vec2.s_t0),
+        B2Vec2.AddVCrossSV(vA, wA, this.m_rA, B2Vec2.s_t1),
+        B2WeldJoint.SolveVelocityConstraints_s_Cdot1);
 
-      // b2Vec2 impulse1 = -b2Mul22(m_mass, Cdot1);
-      const impulse1: b2Vec2 = b2Mat33.MulM33XY(this.m_mass, Cdot1.x, Cdot1.y, b2WeldJoint.SolveVelocityConstraints_s_impulse1).SelfNeg();
+      // B2Vec2 impulse1 = -B2Mul22(m_mass, Cdot1);
+      const impulse1: B2Vec2 = B2Mat33.MulM33XY(this.m_mass, Cdot1.x, Cdot1.y, B2WeldJoint.SolveVelocityConstraints_s_impulse1).SelfNeg();
       this.m_impulse.x += impulse1.x;
       this.m_impulse.y += impulse1.y;
 
-      // b2Vec2 P = impulse1;
-      const P: b2Vec2 = impulse1;
+      // B2Vec2 P = impulse1;
+      const P: B2Vec2 = impulse1;
 
       // vA -= mA * P;
       vA.SelfMulSub(mA, P);
-      // wA -= iA * b2Cross(m_rA, P);
-      wA -= iA * b2Vec2.CrossVV(this.m_rA, P);
+      // wA -= iA * B2Cross(m_rA, P);
+      wA -= iA * B2Vec2.CrossVV(this.m_rA, P);
 
       // vB += mB * P;
       vB.SelfMulAdd(mB, P);
-      // wB += iB * b2Cross(m_rB, P);
-      wB += iB * b2Vec2.CrossVV(this.m_rB, P);
+      // wB += iB * B2Cross(m_rB, P);
+      wB += iB * B2Vec2.CrossVV(this.m_rB, P);
     } else {
-      // b2Vec2 Cdot1 = vB + b2Cross(wB, this.m_rB) - vA - b2Cross(wA, this.m_rA);
-      const Cdot1: b2Vec2 = b2Vec2.SubVV(
-        b2Vec2.AddVCrossSV(vB, wB, this.m_rB, b2Vec2.s_t0),
-        b2Vec2.AddVCrossSV(vA, wA, this.m_rA, b2Vec2.s_t1),
-        b2WeldJoint.SolveVelocityConstraints_s_Cdot1);
+      // B2Vec2 Cdot1 = vB + B2Cross(wB, this.m_rB) - vA - B2Cross(wA, this.m_rA);
+      const Cdot1: B2Vec2 = B2Vec2.SubVV(
+        B2Vec2.AddVCrossSV(vB, wB, this.m_rB, B2Vec2.s_t0),
+        B2Vec2.AddVCrossSV(vA, wA, this.m_rA, B2Vec2.s_t1),
+        B2WeldJoint.SolveVelocityConstraints_s_Cdot1);
       const Cdot2: number = wB - wA;
-      // b2Vec3 const Cdot(Cdot1.x, Cdot1.y, Cdot2);
+      // B2Vec3 const Cdot(Cdot1.x, Cdot1.y, Cdot2);
 
-      // b2Vec3 impulse = -b2Mul(m_mass, Cdot);
-      const impulse: b2Vec3 = b2Mat33.MulM33XYZ(this.m_mass, Cdot1.x, Cdot1.y, Cdot2, b2WeldJoint.SolveVelocityConstraints_s_impulse).SelfNeg();
+      // B2Vec3 impulse = -B2Mul(m_mass, Cdot);
+      const impulse: B2Vec3 = B2Mat33.MulM33XYZ(this.m_mass, Cdot1.x, Cdot1.y, Cdot2, B2WeldJoint.SolveVelocityConstraints_s_impulse).SelfNeg();
       this.m_impulse.SelfAdd(impulse);
 
-      // b2Vec2 P(impulse.x, impulse.y);
-      const P: b2Vec2 = b2WeldJoint.SolveVelocityConstraints_s_P.Set(impulse.x, impulse.y);
+      // B2Vec2 P(impulse.x, impulse.y);
+      const P: B2Vec2 = B2WeldJoint.SolveVelocityConstraints_s_P.Set(impulse.x, impulse.y);
 
       // vA -= mA * P;
       vA.SelfMulSub(mA, P);
-      wA -= iA * (b2Vec2.CrossVV(this.m_rA, P) + impulse.z);
+      wA -= iA * (B2Vec2.CrossVV(this.m_rA, P) + impulse.z);
 
       // vB += mB * P;
       vB.SelfMulAdd(mB, P);
-      wB += iB * (b2Vec2.CrossVV(this.m_rB, P) + impulse.z);
+      wB += iB * (B2Vec2.CrossVV(this.m_rB, P) + impulse.z);
     }
 
     // data.velocities[this.m_indexA].v = vA;
@@ -282,30 +282,30 @@ export class b2WeldJoint extends b2Joint {
     data.velocities[this.m_indexB].w = wB;
   }
 
-  private static SolvePositionConstraints_s_C1 = new b2Vec2();
-  private static SolvePositionConstraints_s_P = new b2Vec2();
-  private static SolvePositionConstraints_s_impulse = new b2Vec3();
-  public SolvePositionConstraints(data: b2SolverData): boolean {
-    const cA: b2Vec2 = data.positions[this.m_indexA].c;
+  private static SolvePositionConstraints_s_C1 = new B2Vec2();
+  private static SolvePositionConstraints_s_P = new B2Vec2();
+  private static SolvePositionConstraints_s_impulse = new B2Vec3();
+  public SolvePositionConstraints(data: B2SolverData): boolean {
+    const cA: B2Vec2 = data.positions[this.m_indexA].c;
     let aA: number = data.positions[this.m_indexA].a;
-    const cB: b2Vec2 = data.positions[this.m_indexB].c;
+    const cB: B2Vec2 = data.positions[this.m_indexB].c;
     let aB: number = data.positions[this.m_indexB].a;
 
-    const qA: b2Rot = this.m_qA.SetAngle(aA), qB: b2Rot = this.m_qB.SetAngle(aB);
+    const qA: B2Rot = this.m_qA.SetAngle(aA), qB: B2Rot = this.m_qB.SetAngle(aB);
 
     const mA: number = this.m_invMassA, mB: number = this.m_invMassB;
     const iA: number = this.m_invIA, iB: number = this.m_invIB;
 
-    // b2Vec2 rA = b2Mul(qA, m_localAnchorA - m_localCenterA);
-    b2Vec2.SubVV(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
-    const rA: b2Vec2 = b2Rot.MulRV(qA, this.m_lalcA, this.m_rA);
-    // b2Vec2 rB = b2Mul(qB, m_localAnchorB - m_localCenterB);
-    b2Vec2.SubVV(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
-    const rB: b2Vec2 = b2Rot.MulRV(qB, this.m_lalcB, this.m_rB);
+    // B2Vec2 rA = B2Mul(qA, m_localAnchorA - m_localCenterA);
+    B2Vec2.SubVV(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
+    const rA: B2Vec2 = B2Rot.MulRV(qA, this.m_lalcA, this.m_rA);
+    // B2Vec2 rB = B2Mul(qB, m_localAnchorB - m_localCenterB);
+    B2Vec2.SubVV(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
+    const rB: B2Vec2 = B2Rot.MulRV(qB, this.m_lalcB, this.m_rB);
 
     let positionError: number, angularError: number;
 
-    const K: b2Mat33 = this.m_K;
+    const K: B2Mat33 = this.m_K;
     K.ex.x = mA + mB + rA.y * rA.y * iA + rB.y * rB.y * iB;
     K.ey.x = -rA.y * rA.x * iA - rB.y * rB.x * iB;
     K.ez.x = -rA.y * iA - rB.y * iB;
@@ -317,52 +317,52 @@ export class b2WeldJoint extends b2Joint {
     K.ez.z = iA + iB;
 
     if (this.m_stiffness > 0) {
-      // b2Vec2 C1 =  cB + rB - cA - rA;
+      // B2Vec2 C1 =  cB + rB - cA - rA;
       const C1 =
-        b2Vec2.SubVV(
-          b2Vec2.AddVV(cB, rB, b2Vec2.s_t0),
-          b2Vec2.AddVV(cA, rA, b2Vec2.s_t1),
-          b2WeldJoint.SolvePositionConstraints_s_C1);
+        B2Vec2.SubVV(
+          B2Vec2.AddVV(cB, rB, B2Vec2.s_t0),
+          B2Vec2.AddVV(cA, rA, B2Vec2.s_t1),
+          B2WeldJoint.SolvePositionConstraints_s_C1);
       positionError = C1.Length();
       angularError = 0;
 
-      // b2Vec2 P = -K.Solve22(C1);
-      const P: b2Vec2 = K.Solve22(C1.x, C1.y, b2WeldJoint.SolvePositionConstraints_s_P).SelfNeg();
+      // B2Vec2 P = -K.Solve22(C1);
+      const P: B2Vec2 = K.Solve22(C1.x, C1.y, B2WeldJoint.SolvePositionConstraints_s_P).SelfNeg();
 
       // cA -= mA * P;
       cA.SelfMulSub(mA, P);
-      aA -= iA * b2Vec2.CrossVV(rA, P);
+      aA -= iA * B2Vec2.CrossVV(rA, P);
 
       // cB += mB * P;
       cB.SelfMulAdd(mB, P);
-      aB += iB * b2Vec2.CrossVV(rB, P);
+      aB += iB * B2Vec2.CrossVV(rB, P);
     } else {
-      // b2Vec2 C1 =  cB + rB - cA - rA;
+      // B2Vec2 C1 =  cB + rB - cA - rA;
       const C1 =
-        b2Vec2.SubVV(
-          b2Vec2.AddVV(cB, rB, b2Vec2.s_t0),
-          b2Vec2.AddVV(cA, rA, b2Vec2.s_t1),
-          b2WeldJoint.SolvePositionConstraints_s_C1);
+        B2Vec2.SubVV(
+          B2Vec2.AddVV(cB, rB, B2Vec2.s_t0),
+          B2Vec2.AddVV(cA, rA, B2Vec2.s_t1),
+          B2WeldJoint.SolvePositionConstraints_s_C1);
       const C2: number = aB - aA - this.m_referenceAngle;
 
       positionError = C1.Length();
-      angularError = b2Abs(C2);
+      angularError = B2Abs(C2);
 
-      // b2Vec3 C(C1.x, C1.y, C2);
+      // B2Vec3 C(C1.x, C1.y, C2);
 
-      // b2Vec3 impulse = -K.Solve33(C);
-      const impulse: b2Vec3 = K.Solve33(C1.x, C1.y, C2, b2WeldJoint.SolvePositionConstraints_s_impulse).SelfNeg();
+      // B2Vec3 impulse = -K.Solve33(C);
+      const impulse: B2Vec3 = K.Solve33(C1.x, C1.y, C2, B2WeldJoint.SolvePositionConstraints_s_impulse).SelfNeg();
 
-      // b2Vec2 P(impulse.x, impulse.y);
-      const P: b2Vec2 = b2WeldJoint.SolvePositionConstraints_s_P.Set(impulse.x, impulse.y);
+      // B2Vec2 P(impulse.x, impulse.y);
+      const P: B2Vec2 = B2WeldJoint.SolvePositionConstraints_s_P.Set(impulse.x, impulse.y);
 
       // cA -= mA * P;
       cA.SelfMulSub(mA, P);
-      aA -= iA * (b2Vec2.CrossVV(this.m_rA, P) + impulse.z);
+      aA -= iA * (B2Vec2.CrossVV(this.m_rA, P) + impulse.z);
 
       // cB += mB * P;
       cB.SelfMulAdd(mB, P);
-      aB += iB * (b2Vec2.CrossVV(this.m_rB, P) + impulse.z);
+      aB += iB * (B2Vec2.CrossVV(this.m_rB, P) + impulse.z);
     }
 
     // data.positions[this.m_indexA].c = cA;
@@ -370,7 +370,7 @@ export class b2WeldJoint extends b2Joint {
     // data.positions[this.m_indexB].c = cB;
     data.positions[this.m_indexB].a = aB;
 
-    return positionError <= b2_linearSlop && angularError <= b2_angularSlop;
+    return positionError <= B2_linearSlop && angularError <= B2_angularSlop;
   }
 
   public GetAnchorA<T extends XY>(out: T): T {
@@ -382,7 +382,7 @@ export class b2WeldJoint extends b2Joint {
   }
 
   public GetReactionForce<T extends XY>(inv_dt: number, out: T): T {
-    // b2Vec2 P(this.m_impulse.x, this.m_impulse.y);
+    // B2Vec2 P(this.m_impulse.x, this.m_impulse.y);
     // return inv_dt * P;
     out.x = inv_dt * this.m_impulse.x;
     out.y = inv_dt * this.m_impulse.y;
@@ -393,9 +393,9 @@ export class b2WeldJoint extends b2Joint {
     return inv_dt * this.m_impulse.z;
   }
 
-  public GetLocalAnchorA(): Readonly<b2Vec2> { return this.m_localAnchorA; }
+  public GetLocalAnchorA(): Readonly<B2Vec2> { return this.m_localAnchorA; }
 
-  public GetLocalAnchorB(): Readonly<b2Vec2> { return this.m_localAnchorB; }
+  public GetLocalAnchorB(): Readonly<B2Vec2> { return this.m_localAnchorB; }
 
   public GetReferenceAngle(): number { return this.m_referenceAngle; }
 
@@ -409,7 +409,7 @@ export class b2WeldJoint extends b2Joint {
     const indexA = this.m_bodyA.m_islandIndex;
     const indexB = this.m_bodyB.m_islandIndex;
 
-    log("  const jd: b2WeldJointDef = new b2WeldJointDef();\n");
+    log("  const jd: B2WeldJointDef = new B2WeldJointDef();\n");
     log("  jd.bodyA = bodies[%d];\n", indexA);
     log("  jd.bodyB = bodies[%d];\n", indexB);
     log("  jd.collideConnected = %s;\n", (this.m_collideConnected) ? ("true") : ("false"));

@@ -18,9 +18,9 @@
 
 // #if B2_ENABLE_PARTICLE
 
-// DEBUG: import { b2Assert } from "../common/b2_settings.js";
+// DEBUG: import { B2Assert } from "../common/b2_settings.js";
 
-export class b2StackQueue<T> {
+export class B2StackQueue<T> {
   public readonly m_buffer: Array<T | null> = [];
   public m_front: number = 0;
   public m_back: number = 0;
@@ -40,12 +40,12 @@ export class b2StackQueue<T> {
     this.m_back++;
   }
   public Pop(): void {
-    // DEBUG: b2Assert(this.m_front < this.m_back);
+    // DEBUG: B2Assert(this.m_front < this.m_back);
     this.m_buffer[this.m_front] = null;
     this.m_front++;
   }
   public Empty(): boolean {
-    // DEBUG: b2Assert(this.m_front <= this.m_back);
+    // DEBUG: B2Assert(this.m_front <= this.m_back);
     return this.m_front === this.m_back;
   }
   public Front(): T {

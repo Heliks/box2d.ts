@@ -16,35 +16,35 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings.js";
-import { b2_polygonRadius } from "../common/b2_settings.js";
-import { b2Vec2, b2Rot, b2Transform, XY } from "../common/b2_math.js";
-import { b2AABB, b2RayCastInput, b2RayCastOutput } from "./b2_collision.js";
-import { b2DistanceProxy } from "./b2_distance.js";
-import { b2MassData } from "./b2_shape.js";
-import { b2Shape, b2ShapeType } from "./b2_shape.js";
+// DEBUG: import { B2Assert } from "../common/b2_settings.js";
+import { B2_polygonRadius } from "../common/b2_settings.js";
+import { B2Vec2, B2Rot, B2Transform, XY } from "../common/b2_math.js";
+import { B2AABB, B2RayCastInput, B2RayCastOutput } from "./b2_collision.js";
+import { B2DistanceProxy } from "./b2_distance.js";
+import { B2MassData } from "./b2_shape.js";
+import { B2Shape, B2ShapeType } from "./b2_shape.js";
 
 /// A line segment (edge) shape. These can be connected in chains or loops
 /// to other edge shapes. Edges created independently are two-sided and do
 /// no provide smooth movement across junctions.
-export class b2EdgeShape extends b2Shape {
-  public readonly m_vertex1: b2Vec2 = new b2Vec2();
-  public readonly m_vertex2: b2Vec2 = new b2Vec2();
-  public readonly m_vertex0: b2Vec2 = new b2Vec2();
-  public readonly m_vertex3: b2Vec2 = new b2Vec2();
+export class B2EdgeShape extends B2Shape {
+  public readonly m_vertex1: B2Vec2 = new B2Vec2();
+  public readonly m_vertex2: B2Vec2 = new B2Vec2();
+  public readonly m_vertex0: B2Vec2 = new B2Vec2();
+  public readonly m_vertex3: B2Vec2 = new B2Vec2();
 
   /// Uses m_vertex0 and m_vertex3 to create smooth collision.
   public m_oneSided: boolean = false;
 
   constructor() {
-    super(b2ShapeType.e_edgeShape, b2_polygonRadius);
+    super(B2ShapeType.e_edgeShape, B2_polygonRadius);
   }
 
   /// Set this as a part of a sequence. Vertex v0 precedes the edge and vertex v3
 	/// follows. These extra vertices are used to provide smooth movement
 	/// across junctions. This also makes the collision one-sided. The edge
 	/// normal points to the right looking from v1 to v2.
-	// void SetOneSided(const b2Vec2& v0, const b2Vec2& v1,const b2Vec2& v2, const b2Vec2& v3);
+	// void SetOneSided(const B2Vec2& v0, const B2Vec2& v1,const B2Vec2& v2, const B2Vec2& v3);
   public SetOneSided(v0: XY, v1: XY, v2: XY, v3: XY): this {
     this.m_vertex0.Copy(v0);
     this.m_vertex1.Copy(v1);
@@ -62,15 +62,15 @@ export class b2EdgeShape extends b2Shape {
     return this;
   }
 
-  /// Implement b2Shape.
-  public Clone(): b2EdgeShape {
-    return new b2EdgeShape().Copy(this);
+  /// Implement B2Shape.
+  public Clone(): B2EdgeShape {
+    return new B2EdgeShape().Copy(this);
   }
 
-  public override Copy(other: b2EdgeShape): this {
+  public override Copy(other: B2EdgeShape): this {
     super.Copy(other);
 
-    // DEBUG: b2Assert(other instanceof b2EdgeShape);
+    // DEBUG: B2Assert(other instanceof B2EdgeShape);
 
     this.m_vertex1.Copy(other.m_vertex1);
     this.m_vertex2.Copy(other.m_vertex2);
@@ -81,33 +81,33 @@ export class b2EdgeShape extends b2Shape {
     return this;
   }
 
-  /// @see b2Shape::GetChildCount
+  /// @see B2Shape::GetChildCount
   public GetChildCount(): number {
     return 1;
   }
 
-  /// @see b2Shape::TestPoint
-  public TestPoint(xf: b2Transform, p: XY): boolean {
+  /// @see B2Shape::TestPoint
+  public TestPoint(xf: B2Transform, p: XY): boolean {
     return false;
   }
 
   // #if B2_ENABLE_PARTICLE
-  /// @see b2Shape::ComputeDistance
-  private static ComputeDistance_s_v1 = new b2Vec2();
-  private static ComputeDistance_s_v2 = new b2Vec2();
-  private static ComputeDistance_s_d = new b2Vec2();
-  private static ComputeDistance_s_s = new b2Vec2();
-  public ComputeDistance(xf: b2Transform, p: b2Vec2, normal: b2Vec2, childIndex: number): number {
-    const v1 = b2Transform.MulXV(xf, this.m_vertex1, b2EdgeShape.ComputeDistance_s_v1);
-    const v2 = b2Transform.MulXV(xf, this.m_vertex2, b2EdgeShape.ComputeDistance_s_v2);
+  /// @see B2Shape::ComputeDistance
+  private static ComputeDistance_s_v1 = new B2Vec2();
+  private static ComputeDistance_s_v2 = new B2Vec2();
+  private static ComputeDistance_s_d = new B2Vec2();
+  private static ComputeDistance_s_s = new B2Vec2();
+  public ComputeDistance(xf: B2Transform, p: B2Vec2, normal: B2Vec2, childIndex: number): number {
+    const v1 = B2Transform.MulXV(xf, this.m_vertex1, B2EdgeShape.ComputeDistance_s_v1);
+    const v2 = B2Transform.MulXV(xf, this.m_vertex2, B2EdgeShape.ComputeDistance_s_v2);
 
-    const d = b2Vec2.SubVV(p, v1, b2EdgeShape.ComputeDistance_s_d);
-    const s = b2Vec2.SubVV(v2, v1, b2EdgeShape.ComputeDistance_s_s);
-    const ds = b2Vec2.DotVV(d, s);
+    const d = B2Vec2.SubVV(p, v1, B2EdgeShape.ComputeDistance_s_d);
+    const s = B2Vec2.SubVV(v2, v1, B2EdgeShape.ComputeDistance_s_s);
+    const ds = B2Vec2.DotVV(d, s);
     if (ds > 0) {
-      const s2 = b2Vec2.DotVV(s, s);
+      const s2 = B2Vec2.DotVV(s, s);
       if (ds > s2) {
-        b2Vec2.SubVV(p, v2, d);
+        B2Vec2.SubVV(p, v2, d);
       } else {
         d.SelfMulSub(ds / s2, s);
       }
@@ -117,39 +117,39 @@ export class b2EdgeShape extends b2Shape {
   }
   // #endif
 
-  /// Implement b2Shape.
+  /// Implement B2Shape.
   // p = p1 + t * d
   // v = v1 + s * e
   // p1 + t * d = v1 + s * e
   // s * e - t * d = p1 - v1
-  private static RayCast_s_p1 = new b2Vec2();
-  private static RayCast_s_p2 = new b2Vec2();
-  private static RayCast_s_d = new b2Vec2();
-  private static RayCast_s_e = new b2Vec2();
-  private static RayCast_s_q = new b2Vec2();
-  private static RayCast_s_r = new b2Vec2();
-  public RayCast(output: b2RayCastOutput, input: b2RayCastInput, xf: b2Transform, childIndex: number): boolean {
+  private static RayCast_s_p1 = new B2Vec2();
+  private static RayCast_s_p2 = new B2Vec2();
+  private static RayCast_s_d = new B2Vec2();
+  private static RayCast_s_e = new B2Vec2();
+  private static RayCast_s_q = new B2Vec2();
+  private static RayCast_s_r = new B2Vec2();
+  public RayCast(output: B2RayCastOutput, input: B2RayCastInput, xf: B2Transform, childIndex: number): boolean {
     // Put the ray into the edge's frame of reference.
-    const p1: b2Vec2 = b2Transform.MulTXV(xf, input.p1, b2EdgeShape.RayCast_s_p1);
-    const p2: b2Vec2 = b2Transform.MulTXV(xf, input.p2, b2EdgeShape.RayCast_s_p2);
-    const d: b2Vec2 = b2Vec2.SubVV(p2, p1, b2EdgeShape.RayCast_s_d);
+    const p1: B2Vec2 = B2Transform.MulTXV(xf, input.p1, B2EdgeShape.RayCast_s_p1);
+    const p2: B2Vec2 = B2Transform.MulTXV(xf, input.p2, B2EdgeShape.RayCast_s_p2);
+    const d: B2Vec2 = B2Vec2.SubVV(p2, p1, B2EdgeShape.RayCast_s_d);
 
-    const v1: b2Vec2 = this.m_vertex1;
-    const v2: b2Vec2 = this.m_vertex2;
-    const e: b2Vec2 = b2Vec2.SubVV(v2, v1, b2EdgeShape.RayCast_s_e);
+    const v1: B2Vec2 = this.m_vertex1;
+    const v2: B2Vec2 = this.m_vertex2;
+    const e: B2Vec2 = B2Vec2.SubVV(v2, v1, B2EdgeShape.RayCast_s_e);
 
   	// Normal points to the right, looking from v1 at v2
-    const normal: b2Vec2 = output.normal.Set(e.y, -e.x).SelfNormalize();
+    const normal: B2Vec2 = output.normal.Set(e.y, -e.x).SelfNormalize();
 
     // q = p1 + t * d
     // dot(normal, q - v1) = 0
     // dot(normal, p1 - v1) + t * dot(normal, d) = 0
-    const numerator: number = b2Vec2.DotVV(normal, b2Vec2.SubVV(v1, p1, b2Vec2.s_t0));
+    const numerator: number = B2Vec2.DotVV(normal, B2Vec2.SubVV(v1, p1, B2Vec2.s_t0));
     if (this.m_oneSided && numerator > 0.0) {
       return false;
     }
 
-    const denominator: number = b2Vec2.DotVV(normal, d);
+    const denominator: number = B2Vec2.DotVV(normal, d);
 
     if (denominator === 0) {
       return false;
@@ -160,52 +160,52 @@ export class b2EdgeShape extends b2Shape {
       return false;
     }
 
-    const q: b2Vec2 = b2Vec2.AddVMulSV(p1, t, d, b2EdgeShape.RayCast_s_q);
+    const q: B2Vec2 = B2Vec2.AddVMulSV(p1, t, d, B2EdgeShape.RayCast_s_q);
 
     // q = v1 + s * r
     // s = dot(q - v1, r) / dot(r, r)
-    const r: b2Vec2 = b2Vec2.SubVV(v2, v1, b2EdgeShape.RayCast_s_r);
-    const rr: number = b2Vec2.DotVV(r, r);
+    const r: B2Vec2 = B2Vec2.SubVV(v2, v1, B2EdgeShape.RayCast_s_r);
+    const rr: number = B2Vec2.DotVV(r, r);
     if (rr === 0) {
       return false;
     }
 
-    const s: number = b2Vec2.DotVV(b2Vec2.SubVV(q, v1, b2Vec2.s_t0), r) / rr;
+    const s: number = B2Vec2.DotVV(B2Vec2.SubVV(q, v1, B2Vec2.s_t0), r) / rr;
     if (s < 0 || 1 < s) {
       return false;
     }
 
     output.fraction = t;
-    b2Rot.MulRV(xf.q, output.normal, output.normal);
+    B2Rot.MulRV(xf.q, output.normal, output.normal);
     if (numerator > 0) {
       output.normal.SelfNeg();
     }
     return true;
   }
 
-  /// @see b2Shape::ComputeAABB
-  private static ComputeAABB_s_v1 = new b2Vec2();
-  private static ComputeAABB_s_v2 = new b2Vec2();
-  public ComputeAABB(aabb: b2AABB, xf: b2Transform, childIndex: number): void {
-    const v1: b2Vec2 = b2Transform.MulXV(xf, this.m_vertex1, b2EdgeShape.ComputeAABB_s_v1);
-    const v2: b2Vec2 = b2Transform.MulXV(xf, this.m_vertex2, b2EdgeShape.ComputeAABB_s_v2);
+  /// @see B2Shape::ComputeAABB
+  private static ComputeAABB_s_v1 = new B2Vec2();
+  private static ComputeAABB_s_v2 = new B2Vec2();
+  public ComputeAABB(aabb: B2AABB, xf: B2Transform, childIndex: number): void {
+    const v1: B2Vec2 = B2Transform.MulXV(xf, this.m_vertex1, B2EdgeShape.ComputeAABB_s_v1);
+    const v2: B2Vec2 = B2Transform.MulXV(xf, this.m_vertex2, B2EdgeShape.ComputeAABB_s_v2);
 
-    b2Vec2.MinV(v1, v2, aabb.lowerBound);
-    b2Vec2.MaxV(v1, v2, aabb.upperBound);
+    B2Vec2.MinV(v1, v2, aabb.lowerBound);
+    B2Vec2.MaxV(v1, v2, aabb.upperBound);
 
     const r: number = this.m_radius;
     aabb.lowerBound.SelfSubXY(r, r);
     aabb.upperBound.SelfAddXY(r, r);
   }
 
-  /// @see b2Shape::ComputeMass
-  public ComputeMass(massData: b2MassData, density: number): void {
+  /// @see B2Shape::ComputeMass
+  public ComputeMass(massData: B2MassData, density: number): void {
     massData.mass = 0;
-    b2Vec2.MidVV(this.m_vertex1, this.m_vertex2, massData.center);
+    B2Vec2.MidVV(this.m_vertex1, this.m_vertex2, massData.center);
     massData.I = 0;
   }
 
-  public SetupDistanceProxy(proxy: b2DistanceProxy, index: number): void {
+  public SetupDistanceProxy(proxy: B2DistanceProxy, index: number): void {
     proxy.m_vertices = proxy.m_buffer;
     proxy.m_vertices[0].Copy(this.m_vertex1);
     proxy.m_vertices[1].Copy(this.m_vertex2);
@@ -213,13 +213,13 @@ export class b2EdgeShape extends b2Shape {
     proxy.m_radius = this.m_radius;
   }
 
-  public ComputeSubmergedArea(normal: b2Vec2, offset: number, xf: b2Transform, c: b2Vec2): number {
+  public ComputeSubmergedArea(normal: B2Vec2, offset: number, xf: B2Transform, c: B2Vec2): number {
     c.SetZero();
     return 0;
   }
 
   public Dump(log: (format: string, ...args: any[]) => void): void {
-    log("    const shape: b2EdgeShape = new b2EdgeShape();\n");
+    log("    const shape: B2EdgeShape = new B2EdgeShape();\n");
     log("    shape.m_radius = %.15f;\n", this.m_radius);
     log("    shape.m_vertex0.Set(%.15f, %.15f);\n", this.m_vertex0.x, this.m_vertex0.y);
     log("    shape.m_vertex1.Set(%.15f, %.15f);\n", this.m_vertex1.x, this.m_vertex1.y);

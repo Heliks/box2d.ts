@@ -18,97 +18,97 @@
 
 // #if B2_ENABLE_PARTICLE
 
-// DEBUG: import { b2Assert } from "../common/b2_settings.js";
-import { b2Vec2, b2Transform, XY } from "../common/b2_math.js";
-import { b2Color, RGBA } from "../common/b2_draw.js";
-import { b2Shape } from "../collision/b2_shape.js";
-import { b2ParticleFlag } from "./b2_particle.js";
-import { b2ParticleSystem } from "./b2_particle_system.js";
+// DEBUG: import { B2Assert } from "../common/b2_settings.js";
+import { B2Vec2, B2Transform, XY } from "../common/b2_math.js";
+import { B2Color, RGBA } from "../common/b2_draw.js";
+import { B2Shape } from "../collision/b2_shape.js";
+import { B2ParticleFlag } from "./b2_particle.js";
+import { B2ParticleSystem } from "./b2_particle_system.js";
 
-export enum b2ParticleGroupFlag {
-  b2_none = 0,
+export enum B2ParticleGroupFlag {
+  B2_none = 0,
   /// Prevents overlapping or leaking.
-  b2_solidParticleGroup = 1 << 0,
+  B2_solidParticleGroup = 1 << 0,
   /// Keeps its shape.
-  b2_rigidParticleGroup = 1 << 1,
+  B2_rigidParticleGroup = 1 << 1,
   /// Won't be destroyed if it gets empty.
-  b2_particleGroupCanBeEmpty = 1 << 2,
+  B2_particleGroupCanBeEmpty = 1 << 2,
   /// Will be destroyed on next simulation step.
-  b2_particleGroupWillBeDestroyed = 1 << 3,
+  B2_particleGroupWillBeDestroyed = 1 << 3,
   /// Updates depth data on next simulation step.
-  b2_particleGroupNeedsUpdateDepth = 1 << 4,
+  B2_particleGroupNeedsUpdateDepth = 1 << 4,
 
-  b2_particleGroupInternalMask = b2_particleGroupWillBeDestroyed | b2_particleGroupNeedsUpdateDepth,
+  B2_particleGroupInternalMask = B2_particleGroupWillBeDestroyed | B2_particleGroupNeedsUpdateDepth,
 }
 
-export interface b2IParticleGroupDef {
-  flags?: b2ParticleFlag;
-  groupFlags?: b2ParticleGroupFlag;
+export interface B2IParticleGroupDef {
+  flags?: B2ParticleFlag;
+  groupFlags?: B2ParticleGroupFlag;
   position?: XY;
   angle?: number;
   linearVelocity?: XY;
   angularVelocity?: number;
   color?: RGBA;
   strength?: number;
-  shape?: b2Shape;
-  shapes?: b2Shape[];
+  shape?: B2Shape;
+  shapes?: B2Shape[];
   shapeCount?: number;
   stride?: number;
   particleCount?: number;
   positionData?: XY[];
   lifetime?: number;
   userData?: any;
-  group?: b2ParticleGroup | null;
+  group?: B2ParticleGroup | null;
 }
 
-export class b2ParticleGroupDef implements b2IParticleGroupDef {
-  public flags: b2ParticleFlag = 0;
-  public groupFlags: b2ParticleGroupFlag = 0;
-  public readonly position: b2Vec2 = new b2Vec2();
+export class B2ParticleGroupDef implements B2IParticleGroupDef {
+  public flags: B2ParticleFlag = 0;
+  public groupFlags: B2ParticleGroupFlag = 0;
+  public readonly position: B2Vec2 = new B2Vec2();
   public angle: number = 0.0;
-  public readonly linearVelocity: b2Vec2 = new b2Vec2();
+  public readonly linearVelocity: B2Vec2 = new B2Vec2();
   public angularVelocity: number = 0.0;
-  public readonly color: b2Color = new b2Color();
+  public readonly color: B2Color = new B2Color();
   public strength: number = 1.0;
-  public shape?: b2Shape;
-  public shapes?: b2Shape[];
+  public shape?: B2Shape;
+  public shapes?: B2Shape[];
   public shapeCount: number = 0;
   public stride: number = 0;
   public particleCount: number = 0;
-  public positionData?: b2Vec2[];
+  public positionData?: B2Vec2[];
   public lifetime: number = 0;
   public userData: any = null;
-  public group: b2ParticleGroup | null = null;
+  public group: B2ParticleGroup | null = null;
 }
 
-export class b2ParticleGroup {
+export class B2ParticleGroup {
 
-  public readonly m_system: b2ParticleSystem;
+  public readonly m_system: B2ParticleSystem;
   public m_firstIndex: number = 0;
   public m_lastIndex: number = 0;
-  public m_groupFlags: b2ParticleGroupFlag = 0;
+  public m_groupFlags: B2ParticleGroupFlag = 0;
   public m_strength: number = 1.0;
-  public m_prev: b2ParticleGroup | null = null;
-  public m_next: b2ParticleGroup | null = null;
+  public m_prev: B2ParticleGroup | null = null;
+  public m_next: B2ParticleGroup | null = null;
   public m_timestamp: number = -1;
   public m_mass: number = 0.0;
   public m_inertia: number = 0.0;
-  public readonly m_center: b2Vec2 = new b2Vec2();
-  public readonly m_linearVelocity: b2Vec2 = new b2Vec2();
+  public readonly m_center: B2Vec2 = new B2Vec2();
+  public readonly m_linearVelocity: B2Vec2 = new B2Vec2();
   public m_angularVelocity: number = 0.0;
-  public readonly m_transform: b2Transform = new b2Transform();
+  public readonly m_transform: B2Transform = new B2Transform();
   ///m_transform.SetIdentity();
   public m_userData: any = null;
 
-  constructor(system: b2ParticleSystem) {
+  constructor(system: B2ParticleSystem) {
     this.m_system = system;
   }
 
-  public GetNext(): b2ParticleGroup | null {
+  public GetNext(): B2ParticleGroup | null {
     return this.m_next;
   }
 
-  public GetParticleSystem(): b2ParticleSystem {
+  public GetParticleSystem(): B2ParticleSystem {
     return this.m_system;
   }
 
@@ -124,7 +124,7 @@ export class b2ParticleGroup {
     return this.m_firstIndex <= index && index < this.m_lastIndex;
   }
 
-  public GetAllParticleFlags(): b2ParticleFlag {
+  public GetAllParticleFlags(): B2ParticleFlag {
     if (!this.m_system.m_flagsBuffer.data) { throw new Error(); }
     let flags = 0;
     for (let i = this.m_firstIndex; i < this.m_lastIndex; i++) {
@@ -133,13 +133,13 @@ export class b2ParticleGroup {
     return flags;
   }
 
-  public GetGroupFlags(): b2ParticleGroupFlag {
+  public GetGroupFlags(): B2ParticleGroupFlag {
     return this.m_groupFlags;
   }
 
   public SetGroupFlags(flags: number): void {
-    // DEBUG: b2Assert((flags & b2ParticleGroupFlag.b2_particleGroupInternalMask) === 0);
-    flags |= this.m_groupFlags & b2ParticleGroupFlag.b2_particleGroupInternalMask;
+    // DEBUG: B2Assert((flags & B2ParticleGroupFlag.B2_particleGroupInternalMask) === 0);
+    flags |= this.m_groupFlags & B2ParticleGroupFlag.B2_particleGroupInternalMask;
     this.m_system.SetGroupFlags(this, flags);
   }
 
@@ -153,12 +153,12 @@ export class b2ParticleGroup {
     return this.m_inertia;
   }
 
-  public GetCenter(): Readonly<b2Vec2> {
+  public GetCenter(): Readonly<B2Vec2> {
     this.UpdateStatistics();
     return this.m_center;
   }
 
-  public GetLinearVelocity(): Readonly<b2Vec2> {
+  public GetLinearVelocity(): Readonly<B2Vec2> {
     this.UpdateStatistics();
     return this.m_linearVelocity;
   }
@@ -168,11 +168,11 @@ export class b2ParticleGroup {
     return this.m_angularVelocity;
   }
 
-  public GetTransform(): Readonly<b2Transform> {
+  public GetTransform(): Readonly<B2Transform> {
     return this.m_transform;
   }
 
-  public GetPosition(): Readonly<b2Vec2> {
+  public GetPosition(): Readonly<B2Vec2> {
     return this.m_transform.p;
   }
 
@@ -181,12 +181,12 @@ export class b2ParticleGroup {
   }
 
   public GetLinearVelocityFromWorldPoint<T extends XY>(worldPoint: XY, out: T): T {
-    const s_t0 = b2ParticleGroup.GetLinearVelocityFromWorldPoint_s_t0;
+    const s_t0 = B2ParticleGroup.GetLinearVelocityFromWorldPoint_s_t0;
     this.UpdateStatistics();
-    ///  return m_linearVelocity + b2Cross(m_angularVelocity, worldPoint - m_center);
-    return b2Vec2.AddVCrossSV(this.m_linearVelocity, this.m_angularVelocity, b2Vec2.SubVV(worldPoint, this.m_center, s_t0), out);
+    ///  return m_linearVelocity + B2Cross(m_angularVelocity, worldPoint - m_center);
+    return B2Vec2.AddVCrossSV(this.m_linearVelocity, this.m_angularVelocity, B2Vec2.SubVV(worldPoint, this.m_center, s_t0), out);
   }
-  public static readonly GetLinearVelocityFromWorldPoint_s_t0 = new b2Vec2();
+  public static readonly GetLinearVelocityFromWorldPoint_s_t0 = new B2Vec2();
 
   public GetUserData(): void {
     return this.m_userData;
@@ -215,8 +215,8 @@ export class b2ParticleGroup {
   public UpdateStatistics(): void {
     if (!this.m_system.m_positionBuffer.data) { throw new Error(); }
     if (!this.m_system.m_velocityBuffer.data) { throw new Error(); }
-    const p = new b2Vec2();
-    const v = new b2Vec2();
+    const p = new B2Vec2();
+    const v = new B2Vec2();
     if (this.m_timestamp !== this.m_system.m_timestamp) {
       const m = this.m_system.GetParticleMass();
       ///  this.m_mass = 0;
@@ -241,11 +241,11 @@ export class b2ParticleGroup {
       this.m_angularVelocity = 0;
       for (let i = this.m_firstIndex; i < this.m_lastIndex; i++) {
         ///b2Vec2 p = this.m_system.m_positionBuffer.data[i] - this.m_center;
-        b2Vec2.SubVV(this.m_system.m_positionBuffer.data[i], this.m_center, p);
+        B2Vec2.SubVV(this.m_system.m_positionBuffer.data[i], this.m_center, p);
         ///b2Vec2 v = this.m_system.m_velocityBuffer.data[i] - this.m_linearVelocity;
-        b2Vec2.SubVV(this.m_system.m_velocityBuffer.data[i], this.m_linearVelocity, v);
-        this.m_inertia += m * b2Vec2.DotVV(p, p);
-        this.m_angularVelocity += m * b2Vec2.CrossVV(p, v);
+        B2Vec2.SubVV(this.m_system.m_velocityBuffer.data[i], this.m_linearVelocity, v);
+        this.m_inertia += m * B2Vec2.DotVV(p, p);
+        this.m_angularVelocity += m * B2Vec2.CrossVV(p, v);
       }
       if (this.m_inertia > 0) {
         this.m_angularVelocity *= 1 / this.m_inertia;
