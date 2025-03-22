@@ -1,6 +1,6 @@
 {
   "name": "@heliks/box2d",
-  "version": "1.0.1",
+  "version": "0.0.3-rc01",
   "description": "A TypeScript port of Box2D",
   "main": "./lib/box2d.js",
   "types": "./lib/box2d.d.ts",
